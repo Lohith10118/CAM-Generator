@@ -2,10 +2,10 @@ import os
 import shutil
 from flask import Flask, render_template, request, redirect, flash, send_file, url_for
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file (looks in parent directories too)
+load_dotenv(find_dotenv())
 
 # Import from the newly structured modules
 from modules.document_processor import process_pdf
@@ -77,8 +77,8 @@ def dashboard():
             from modules.document_processor import extract_financial_tables
             financial_tables = extract_financial_tables(report_path)
             
-            # 2. Extract Financials via Groq LLM & Regex fallbacks
-            print("[3/7] Searching semantic vectors & Extracting Financials (Groq)...")
+            # 2. Extract Financials via Gemini LLM & Regex fallbacks
+            print("[3/7] Searching semantic vectors & Extracting Financials (Gemini)...")
             financials = extract_financials(extracted_text, tables_data=financial_tables)
             
             # 3. Analyze GST and Bank mismatch

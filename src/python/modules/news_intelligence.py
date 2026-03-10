@@ -5,7 +5,8 @@ import re
 import feedparser
 import requests
 from bs4 import BeautifulSoup
-from groq import Groq
+from google import genai
+from google.genai import types
 from duckduckgo_search import DDGS
 
 # Load English NLP model. If missing, print a warning to install.
@@ -20,7 +21,7 @@ def process_news(news_folder, org_name="Unknown"):
     Analyze uploaded news articles in the given folder.
     Use DuckDuckGo to automatically perform secondary research.
     Use spaCy NLP for NER and keyword detection.
-    Use Groq to extract structured risk summaries.
+    Use Gemini to extract structured risk summaries.
     """
     combined_text = ""
     
@@ -85,25 +86,25 @@ def process_news(news_folder, org_name="Unknown"):
             if kw in lower_text:
                 found_keywords.add(kw)
                 
-    # Groq AI Risk Summarization
-    groq_summary = __summarize_risks_with_groq(combined_text)
+    # Gemini AI Risk Summarization
+    gemini_summary = __summarize_risks_with_gemini(combined_text)
     
     # Structure Output
-    is_litigation = groq_summary.get("litigation_detection", "No").lower() == "yes" or len(found_keywords) > 0
+    is_litigation = gemini_summary.get("litigation_detection", "No").lower() == "yes" or len(found_keywords) > 0
     
     return {
-        "sentiment_score": groq_summary.get("sentiment_score", "Neutral"),
+        "sentiment_score": gemini_summary.get("sentiment_score", "Neutral"),
         "litigation_detected": is_litigation,
         "risk_keywords": list(found_keywords)
     }
 
-def __summarize_risks_with_groq(text):
-    api_key = os.getenv("GROQ_API_KEY")
+def __summarize_risks_with_gemini(text):
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        return {"sentiment_score": "Neutral", "litigation_detection": "No", "risk_indicators": "Groq API Key missing"}
+        return {"sentiment_score": "Neutral", "litigation_detection": "No", "risk_indicators": "Gemini API Key missing"}
         
-    client = Groq(api_key=api_key)
-    model_name = 'llama-3.3-70b-versatile'
+    client = genai.Client(api_key=api_key)
+    model_name = 'gemini-2.5-flash'
     
     prompt = """
     You are a corporate risk analyst. Read the following news articles about a company.
@@ -122,16 +123,16 @@ def __summarize_risks_with_groq(text):
         truncated = text[:15000]
         full_prompt = prompt + "\n" + truncated
         
-        response = client.chat.completions.create(
+        response = client.models.generate_content(
             model=model_name,
-            messages=[
-                {"role": "user", "content": full_prompt}
-            ],
-            response_format={"type": "json_object"},
-            temperature=0
+            contents=full_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                temperature=0.0
+            )
         )
         
-        result_text = response.choices[0].message.content.strip()
+        result_text = response.text.strip()
         if result_text.startswith('```'):
             result_text = re.sub(r'^```(?:json)?\s*', '', result_text)
             result_text = re.sub(r'\s*```$', '', result_text)
@@ -150,7 +151,7 @@ def __summarize_risks_with_groq(text):
         return data
         
     except Exception as e:
-        print(f"Error calling Groq in news analysis: {e}")
+        print(f"Error calling Gemini in news analysis: {e}")
         return {
             "sentiment_score": "Unknown",
             "litigation_detection": "Unknown",

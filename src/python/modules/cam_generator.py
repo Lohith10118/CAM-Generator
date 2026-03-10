@@ -1,5 +1,6 @@
 import os
-from groq import Groq
+from google import genai
+from google.genai import types
 import json
 import re
 
@@ -7,12 +8,12 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     """
     Use Gemini to generate a structured JSON Credit Appraisal Memo for tabular display.
     """
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        return '{"error": "GROQ_API_KEY missing. AI unable to generate CAM."}'
+        return '{"error": "GEMINI_API_KEY missing. AI unable to generate CAM."}'
         
-    client = Groq(api_key=api_key)
-    model_name = 'llama-3.3-70b-versatile'
+    client = genai.Client(api_key=api_key)
+    model_name = 'gemini-2.5-flash'
     
     prompt = f"""
     You are an expert Credit Analyst. Please extract and infer information to populate the following Credit Appraisal Memorandum.
@@ -82,14 +83,16 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     """
     
     try:
-        response = client.chat.completions.create(
+        response = client.models.generate_content(
             model=model_name,
-            messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"},
-            temperature=0
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                temperature=0.0
+            )
         )
         # Parse output to ensure strictly JSON
-        result_text = response.choices[0].message.content.strip()
+        result_text = response.text.strip()
         if result_text.startswith('```'):
             result_text = re.sub(r'^```(?:json)?\s*', '', result_text)
             result_text = re.sub(r'\s*```$', '', result_text)

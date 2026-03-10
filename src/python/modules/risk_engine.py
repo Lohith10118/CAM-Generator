@@ -1,5 +1,6 @@
 import os
-from groq import Groq
+from google import genai
+from google.genai import types
 
 def compute_risk_score(financials, gst_bank_results, news_insights, officer_notes=""):
     """
@@ -149,28 +150,28 @@ def _parse_val(val_str):
         return None
 
 def __analyze_officer_notes(notes):
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key: return 0
-    client = Groq(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     prompt = f"""You are a scoring assistant. Read these Credit Officer qualitative notes: "{notes}"
 Based on these notes, output ONLY a single integer representing a risk score adjustment from -20 (severe risk) to +10 (strong positive mitigate). Do not include any text, just the integer.
 """
     try:
-        response = client.chat.completions.create(
-            model='llama-3.3-70b-versatile',
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.0)
         )
         import re
-        val = re.sub(r'[^\d-]', '', response.choices[0].message.content)
+        val = re.sub(r'[^\d-]', '', response.text)
         return int(val)
     except:
         return 0
 
 def __generate_rationale(score, decision, limit, financials, gst_bank_results, news_insights, notes):
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key: return f"{decision} based on score {score}."
-    client = Groq(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     
     news_summary = ""
     if news_insights:
@@ -190,11 +191,11 @@ News/Litigation Risks: {news_summary}
 Make sure to explain WHY it was approved, reviewed, or rejected.
 """
     try:
-        response = client.chat.completions.create(
-            model='llama-3.3-70b-versatile',
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.0)
         )
-        return response.choices[0].message.content.strip()
+        return response.text.strip()
     except Exception as e:
         return f"{decision} based on score {score}."

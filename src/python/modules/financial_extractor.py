@@ -2,7 +2,8 @@ import os
 import json
 import re
 import time
-from groq import Groq
+from google import genai
+from google.genai import types
 from modules.document_processor import split_document_into_chunks
 
 def extract_regex_fallbacks(text):
@@ -26,16 +27,16 @@ def extract_regex_fallbacks(text):
 
 def extract_financials(text, tables_data=None):
     """
-    Use Groq API to analyze the annual report text and extract structured financial metrics.
+    Use Gemini API to analyze the annual report text and extract structured financial metrics.
     """
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise ValueError("GROQ_API_KEY environment variable is not set. Please set it to use the Groq API.")
+        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it to use the Gemini API.")
         
-    client = Groq(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     
-    # Using llama-3.3-70b-versatile for fast and cost-effective extraction
-    model_name = 'llama-3.3-70b-versatile'
+    # Using gemini-2.5-flash for fast and cost-effective extraction
+    model_name = 'gemini-2.5-flash'
     
     prompt = """
     You are an expert financial analyst. Please extract the following financial metrics from the provided annual report text.
@@ -121,14 +122,16 @@ def extract_financials(text, tables_data=None):
             if i == 0 and table_context:
                 full_prompt += "\n" + table_context
 
-            response = client.chat.completions.create(
+            response = client.models.generate_content(
                 model=model_name,
-                messages=[{"role": "user", "content": full_prompt}],
-                response_format={"type": "json_object"},
-                temperature=0
+                contents=full_prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.0
+                )
             )
             
-            result_text = response.choices[0].message.content.strip()
+            result_text = response.text.strip()
             if result_text.startswith('```'):
                 result_text = re.sub(r'^```(?:json)?\s*', '', result_text)
                 result_text = re.sub(r'\s*```$', '', result_text)
