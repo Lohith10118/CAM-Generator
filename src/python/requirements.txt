@@ -19,3 +19,5 @@ python-dotenv
 duckduckgo-search
 faiss-cpu
 camelot-py[cv]
+opencv-python-headless
+tabula-py
