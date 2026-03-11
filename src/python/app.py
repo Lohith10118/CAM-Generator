@@ -32,6 +32,78 @@ def dashboard():
 
 from modules.document_classifier import classify_documents
 
+# --- Background Task Storage ---
+import uuid
+import threading
+
+# Store background tasks: {task_id: {"status": "processing"|"success"|"error", "result": {...}, "message": "..."}}
+background_tasks = {}
+
+def background_process_documents(task_id, saved_doc_paths, entity_details, loan_details, officer_notes, dynamic_schema, app_config):
+    """
+    This function runs in a background thread so the HTTP request can return immediately.
+    """
+    try:
+        background_tasks[task_id]['message'] = "Classifying documents..."
+        print(f"[{task_id}] [1/3] Auto-classifying uploaded documents...")
+        file_classes = classify_documents(saved_doc_paths)
+        
+        # 2. Find Annual Report
+        annual_report_path = None
+        for filename, category in file_classes.items():
+            if category == "Annual Report":
+                annual_report_path = os.path.join(app_config['UPLOAD_FOLDER'], filename)
+                break
+        
+        if not annual_report_path:
+             for path in saved_doc_paths:
+                 if path.lower().endswith('.pdf'):
+                     annual_report_path = path
+                     file_classes[os.path.basename(path)] = "Annual Report"
+                     break
+                     
+        if not annual_report_path:
+            background_tasks[task_id]['status'] = 'error'
+            background_tasks[task_id]['message'] = "Could not identify an Annual Report among the uploaded files."
+            return
+
+        background_tasks[task_id]['message'] = "Extracting text from Annual Report (this may take a few minutes)..."
+        print(f"[{task_id}] [2/3] Processing PDF Document & chunking text...")
+        extracted_text = process_pdf(annual_report_path)
+        
+        if not extracted_text or len(extracted_text.strip()) < 10:
+            background_tasks[task_id]['status'] = 'error'
+            background_tasks[task_id]['message'] = "The uploaded Annual Report PDF appears to be a scanned image or completely empty."
+            return
+            
+        with open(os.path.join(app_config['UPLOAD_FOLDER'], 'extracted_text_cache.json'), 'w', encoding='utf-8') as f:
+            f.write(extracted_text)
+        
+        background_tasks[task_id]['message'] = "AI extracting financial metrics from text..."
+        print(f"[{task_id}] [3/3] Extracting Financials & applying Dynamic Schema from AI...")
+        from modules.document_processor import extract_financial_tables
+        financial_tables = extract_financial_tables(annual_report_path)
+        
+        financials = extract_financials(extracted_text, tables_data=financial_tables, dynamic_schema=dynamic_schema)
+        
+        print(f"[{task_id}] --- Processing complete! ---")
+        
+        # Save results securely so the browser can fetch them
+        background_tasks[task_id]['status'] = 'success'
+        background_tasks[task_id]['result'] = {
+            "file_classes": file_classes,
+            "financials": financials,
+            "entity_details": entity_details,
+            "loan_details": loan_details,
+            "officer_notes": officer_notes
+        }
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        background_tasks[task_id]['status'] = 'error'
+        background_tasks[task_id]['message'] = f"Error during document processing: {str(e)}"
+
 @app.route("/process_documents", methods=['POST'])
 def process_documents():
     # Clear old uploads
@@ -98,46 +170,67 @@ def process_documents():
         if news and news.filename:
             news.save(os.path.join(app.config['NEWS_FOLDER'], secure_filename(news.filename)))
 
-    try:
-        # 1. Classify Documents
-        print("[1/3] Auto-classifying uploaded documents...")
-        file_classes = classify_documents(saved_doc_paths)
-        
-        # 2. Find Annual Report
-        annual_report_path = None
-        for filename, category in file_classes.items():
-            if category == "Annual Report":
-                annual_report_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                break
-        
-        if not annual_report_path:
-             for path in saved_doc_paths:
-                 if path.lower().endswith('.pdf'):
-                     annual_report_path = path
-                     file_classes[os.path.basename(path)] = "Annual Report"
-                     break
-                     
-        if not annual_report_path:
-            flash("Error: Could not identify an Annual Report among the uploaded files.")
-            return redirect(url_for('dashboard'))
+    # --- Start Background Processing Thread ---
+    task_id = str(uuid.uuid4())
+    background_tasks[task_id] = {
+        "status": "processing",
+        "message": "Starting processing...",
+        "result": None
+    }
+    
+    # We must pass app.config manually because threads don't share the current request context easily
+    app_config = {
+        'UPLOAD_FOLDER': app.config['UPLOAD_FOLDER'],
+        'NEWS_FOLDER': app.config['NEWS_FOLDER']
+    }
+    
+    thread = threading.Thread(target=background_process_documents, args=(
+        task_id, saved_doc_paths, entity_details, loan_details, officer_notes, dynamic_schema, app_config
+    ))
+    thread.daemon = True # Allows app to exit even if thread is running
+    thread.start()
+    
+    return render_template("processing.html", task_id=task_id)
 
-        print("[2/3] Processing PDF Document & chunking text...")
-        extracted_text = process_pdf(annual_report_path)
+from flask import jsonify
+
+@app.route("/status/<task_id>", methods=['GET'])
+def get_task_status(task_id):
+    task = background_tasks.get(task_id)
+    if not task:
+        return jsonify({"status": "error", "message": "Task not found."}), 404
+    return jsonify(task)
+
+import json
+@app.route("/review_staged", methods=['POST'])
+def review_staged():
+    """
+    Renders the human-in-the-loop review screen after background processing completes.
+    Data is submitted via a hidden form in processing.html.
+    """
+    try:
+        entity_details = {
+            "name": request.form.get('entity_name', ''),
+            "cin": request.form.get('entity_cin', ''),
+            "pan": request.form.get('entity_pan', ''),
+            "sector": request.form.get('entity_sector', ''),
+            "turnover": request.form.get('entity_turnover', '')
+        }
         
-        if not extracted_text or len(extracted_text.strip()) < 10:
-            flash("Error: The uploaded Annual Report PDF appears to be a scanned image or completely empty.")
-            return redirect(url_for('dashboard'))
-            
-        with open(os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_text_cache.json'), 'w', encoding='utf-8') as f:
-            f.write(extracted_text)
+        loan_details = {
+            "type": request.form.get('loan_type', ''),
+            "amount": request.form.get('loan_amount', ''),
+            "tenure": request.form.get('loan_tenure', ''),
+            "interest": request.form.get('loan_interest', '')
+        }
         
-        print("[3/3] Extracting Financials & applying Dynamic Schema from AI...")
-        from modules.document_processor import extract_financial_tables
-        financial_tables = extract_financial_tables(annual_report_path)
+        officer_notes = request.form.get('officer_notes', '')
+        json_payload_str = request.form.get('json_payload', '{}')
+        complex_data = json.loads(json_payload_str)
         
-        financials = extract_financials(extracted_text, tables_data=financial_tables, dynamic_schema=dynamic_schema)
+        file_classes = complex_data.get('file_classes', {})
+        financials = complex_data.get('financials', {})
         
-        print("--- Staging complete! Rendering Human-In-The-Loop Review ---")
         return render_template(
             "review.html",
             file_classes=file_classes,
@@ -146,11 +239,8 @@ def process_documents():
             loan_details=loan_details,
             officer_notes=officer_notes
         )
-        
     except Exception as e:
-        import traceback
-        traceback.print_exc()
-        flash(f"Error during document processing: {str(e)}")
+        flash(f"Error loading review screen: {str(e)}")
         return redirect(url_for('dashboard'))
 
 

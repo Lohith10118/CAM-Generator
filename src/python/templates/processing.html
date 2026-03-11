@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliCredit AI - Processing</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 2 7 12 12 22 7 12 2%22></polygon><polyline points=%222 12 12 17 22 12%22></polyline><polyline points=%222 17 12 22 22 17%22></polyline></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 6px solid #e2e8f0;
+            border-top-color: #4F46E5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+
+        .spinner-pulse {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(79, 70, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(79, 70, 229, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        .status-text {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .time-warning {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #fef3c7;
+            color: #92400e;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="navbar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                </svg>
+                <span>IntelliCredit AI</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="card glass-card loader-container">
+                <div class="spinner-pulse">
+                    <div class="spinner"></div>
+                </div>
+                
+                <h2>AI Engine Analyzing Documents</h2>
+                
+                <p class="status-text" id="status-message">
+                    Uploading documents and initializing AI processors...
+                </p>
+                
+                <div class="time-warning">
+                    <strong>Note:</strong> Very large Annual Reports (100+ pages) may take up to 2-3 minutes to process. Please do not refresh this page.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden form to POST the extracted data to /review once the background thread completes -->
+    <form id="auto-submit-form" action="/review_staged" method="POST" style="display: none;">
+        <!-- Entity Data -->
+        <input type="hidden" name="entity_name" value="">
+        <input type="hidden" name="entity_cin" value="">
+        <input type="hidden" name="entity_pan" value="">
+        <input type="hidden" name="entity_sector" value="">
+        <input type="hidden" name="entity_turnover" value="">
+        <!-- Loan Data -->
+        <input type="hidden" name="loan_type" value="">
+        <input type="hidden" name="loan_amount" value="">
+        <input type="hidden" name="loan_tenure" value="">
+        <input type="hidden" name="loan_interest" value="">
+        <!-- Notes -->
+        <input type="hidden" name="officer_notes" value="">
+        <input type="hidden" id="json_payload" name="json_payload" value="">
+    </form>
+
+    <script>
+        const taskId = "{{ task_id }}";
+        const statusEl = document.getElementById('status-message');
+        
+        const POLL_INTERVAL = 3000; // 3 seconds
+        let errorCount = 0;
+
+        function checkStatus() {
+            fetch(`/status/${taskId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    errorCount = 0;
+                    
+                    if (data.status === 'processing') {
+                        statusEl.innerText = data.message || 'Extracting text and tables from documents...';
+                        setTimeout(checkStatus, POLL_INTERVAL);
+                    } 
+                    else if (data.status === 'success') {
+                        statusEl.innerText = 'Analysis complete! Rendering review screen...';
+                        statusEl.style.color = '#10b981';
+                        
+                        // We received the processed data. Redirect to the review page using a hidden POST form.
+                        const form = document.getElementById('auto-submit-form');
+                        const result = data.result;
+                        
+                        // Populate entity details
+                        if(result.entity_details) {
+                           form.elements['entity_name'].value = result.entity_details.name || '';
+                           form.elements['entity_cin'].value = result.entity_details.cin || '';
+                           form.elements['entity_pan'].value = result.entity_details.pan || '';
+                           form.elements['entity_sector'].value = result.entity_details.sector || '';
+                           form.elements['entity_turnover'].value = result.entity_details.turnover || '';
+                        }
+                        
+                        // Populate loan details
+                        if(result.loan_details) {
+                           form.elements['loan_type'].value = result.loan_details.type || '';
+                           form.elements['loan_amount'].value = result.loan_details.amount || '';
+                           form.elements['loan_tenure'].value = result.loan_details.tenure || '';
+                           form.elements['loan_interest'].value = result.loan_details.interest || '';
+                        }
+                        
+                        form.elements['officer_notes'].value = result.officer_notes || '';
+                        
+                        // Combine the complex data into a single JSON payload to pass safely across the HTTP POST boundary
+                        const complexPayload = {
+                            file_classes: result.file_classes,
+                            financials: result.financials
+                        };
+                        document.getElementById('json_payload').value = JSON.stringify(complexPayload);
+                        
+                        // Submit!
+                        form.submit();
+                    }
+                    else if (data.status === 'error') {
+                        statusEl.innerText = 'Error: ' + data.message;
+                        statusEl.style.color = '#ef4444';
+                        document.querySelector('.spinner-pulse').style.display = 'none';
+                        document.querySelector('.time-warning').innerHTML = '<a href="/" style="color:#ef4444;text-decoration:underline;">Click here to return home and try again.</a>';
+                        document.querySelector('.time-warning').style.backgroundColor = '#fef2f2';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching status:', error);
+                    errorCount++;
+                    if (errorCount < 5) {
+                        // Keep trying in case it was a temporary network blip
+                        setTimeout(checkStatus, POLL_INTERVAL);
+                    } else {
+                        statusEl.innerText = "Connection lost. Please refresh the page.";
+                        statusEl.style.color = '#ef4444';
+                    }
+                });
+        }
+
+        // Start polling when page loads
+        window.addEventListener('load', () => {
+             // Artificial slight delay for UI feel
+             setTimeout(checkStatus, 2000);
+        });
+    </script>
+</body>
+</html>
