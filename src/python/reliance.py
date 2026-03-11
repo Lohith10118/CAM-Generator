@@ -61,26 +61,35 @@ def generate_ril_enterprise_data(records=2500):
     # ---------------------------------------------------------
     print("Generating monthly GST filings...")
     
-    # THE FRAUD TRAP: We inflate the GST declared sales to be 18% higher than actual bank cash.
-    # This creates a massive, multi-thousand crore black hole for the AI to find.
-    fake_annual_gst_revenue = total_inflows * 1.18 
-    monthly_avg_sales = fake_annual_gst_revenue / 12
+    # THE FRAUD TRAP: Make the first 9 months clean to train the ML model.
+    # Then spike Jan, Feb, March 2025 by 40% to test the anomaly detector.
+    
+    bank_df['MonthStr'] = pd.to_datetime(bank_df['Date']).dt.strftime('%b-%Y')
+    monthly_inflows = bank_df.groupby('MonthStr')['Deposit'].sum().fillna(0).to_dict()
     
     gst_data = []
     for month in range(1, 13):
-        monthly_sales = round(np.random.normal(monthly_avg_sales, monthly_avg_sales * 0.03), 2)
-        tax_paid = round(monthly_sales * 0.18, 2) # Assuming 18% GST bracket
-        
         m = (month + 2) % 12 + 1
         y = 2024 if m >= 4 else 2025
         month_str = datetime(y, m, 1).strftime('%b-%Y')
         
+        actual_inflow = monthly_inflows.get(month_str, 0.0)
+        
+        # Q4 Fraud Spike (Jan, Feb, Mar 2025)
+        if m in [1, 2, 3] and y == 2025:
+            monthly_sales = round(actual_inflow * 1.40, 2) # 40% Fake Inflation
+        else:
+            monthly_sales = round(actual_inflow, 2) # Perfect Match
+            
+        tax_paid = round(monthly_sales * 0.18, 2)
         gst_data.append([month_str, monthly_sales, tax_paid, 'Filed'])
 
     gst_df = pd.DataFrame(gst_data, columns=['Month', 'Declared_Sales_INR', 'Tax_Paid', 'Filing_Status'])
     gst_file = os.path.join(data_dir, 'ril_gst_returns_large.csv')
     gst_df.to_csv(gst_file, index=False)
     
+    bank_df.drop(columns=['MonthStr'], inplace=True, errors='ignore')
+
     # ---------------------------------------------------------
     print(f"\nSuccess! Generated {records} Reliance banking transactions and 12 months of GST.")
     print(f"Actual Bank Inflows: Rs. {total_inflows:,.2f}")
