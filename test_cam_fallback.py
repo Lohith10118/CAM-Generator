@@ -30,6 +30,8 @@ news = {}
 # We can just mock the client. Wait, no need, let's just observe what happens if we pass empty text, 
 # wait the API key is not in this shell, so it will fail immediately.
 os.environ.pop("GEMINI_API_KEY", None)
+os.environ.pop("GEMINI_API_KEY_1", None)
+os.environ.pop("GEMINI_API_KEY_2", None)
 
 res = generate_cam(risk_results, financials, gst_bank, news, "Test text")
 print(res)

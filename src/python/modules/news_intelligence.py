@@ -5,7 +5,7 @@ import re
 import feedparser
 import requests
 from bs4 import BeautifulSoup
-from google import genai
+from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 from duckduckgo_search import DDGS
 
@@ -105,11 +105,6 @@ def process_news(news_folder, org_name="Unknown"):
     }
 
 def __summarize_risks_with_gemini(text):
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        return {"sentiment_score": "Neutral", "litigation_detection": "No", "risk_indicators": "Gemini API Key missing"}
-        
-    client = genai.Client(api_key=api_key)
     model_name = 'gemini-2.5-flash'
     
     prompt = """
@@ -129,13 +124,14 @@ def __summarize_risks_with_gemini(text):
         truncated = text[:15000]
         full_prompt = prompt + "\n" + truncated
         
-        response = client.models.generate_content(
-            model=model_name,
+        response = generate_content_with_fallback(
+            model_name=model_name,
             contents=full_prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 temperature=0.0
-            )
+            ),
+            timeout_seconds=20
         )
         
         result_text = response.text.strip()

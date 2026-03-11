@@ -1,5 +1,5 @@
 import os
-from google import genai
+from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 import json
 import re
@@ -8,11 +8,6 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     """
     Use Gemini to generate a structured JSON Credit Appraisal Memo for tabular display.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        return '{"error": "GEMINI_API_KEY missing. AI unable to generate CAM."}'
-        
-    client = genai.Client(api_key=api_key)
     model_name = 'gemini-2.5-flash'
     
     entity_details = entity_details or {}
@@ -101,13 +96,14 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     """
     
     try:
-        response = client.models.generate_content(
-            model=model_name,
+        response = generate_content_with_fallback(
+            model_name=model_name,
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 temperature=0.0
-            )
+            ),
+            timeout_seconds=30
         )
         # Parse output to ensure strictly JSON
         result_text = response.text.strip()

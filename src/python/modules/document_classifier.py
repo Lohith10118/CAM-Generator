@@ -1,7 +1,7 @@
 import os
 import json
 import re
-from google import genai
+from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 from modules.document_processor import process_pdf
 import pandas as pd
@@ -12,11 +12,6 @@ def classify_documents(file_paths):
     and uses Gemini to classify its document type.
     Returns a dictionary mapping filename to its predicted category.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set.")
-        
-    client = genai.Client(api_key=api_key)
     model_name = 'gemini-2.5-flash'
     
     categories = [
@@ -75,13 +70,14 @@ def classify_documents(file_paths):
             
         try:
             full_prompt = prompt + "\n" + sample_text[:4000]
-            response = client.models.generate_content(
-                model=model_name,
+            response = generate_content_with_fallback(
+                model_name=model_name,
                 contents=full_prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.0
-                )
+                ),
+                timeout_seconds=20
             )
             
             result_text = response.text.strip()

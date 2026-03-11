@@ -2,7 +2,7 @@ import os
 import json
 import re
 import time
-from google import genai
+from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 from modules.document_processor import split_document_into_chunks
 
@@ -29,12 +29,6 @@ def extract_financials(text, tables_data=None, dynamic_schema=None):
     """
     Use Gemini API to analyze the annual report text and extract structured financial metrics.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it to use the Gemini API.")
-        
-    client = genai.Client(api_key=api_key)
-    
     # Using gemini-2.5-flash for fast and cost-effective extraction
     model_name = 'gemini-2.5-flash'
     
@@ -129,13 +123,14 @@ def extract_financials(text, tables_data=None, dynamic_schema=None):
             if i == 0 and table_context:
                 full_prompt += "\n" + table_context
 
-            response = client.models.generate_content(
-                model=model_name,
+            response = generate_content_with_fallback(
+                model_name=model_name,
                 contents=full_prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.0
-                )
+                ),
+                timeout_seconds=20
             )
             
             result_text = response.text.strip()

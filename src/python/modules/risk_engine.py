@@ -1,5 +1,5 @@
 import os
-from google import genai
+from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 
 def compute_risk_score(financials, gst_bank_results, news_insights, officer_notes="", entity_details=None, loan_details=None):
@@ -207,17 +207,15 @@ def _parse_val(val_str):
         return None
 
 def __analyze_officer_notes(notes):
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key: return 0
-    client = genai.Client(api_key=api_key)
     prompt = f"""You are a scoring assistant. Read these Credit Officer qualitative notes: "{notes}"
 Based on these notes, output ONLY a single integer representing a risk score adjustment from -20 (severe risk) to +10 (strong positive mitigate). Do not include any text, just the integer.
 """
     try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
+        response = generate_content_with_fallback(
+            model_name='gemini-2.5-flash',
             contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.0)
+            config=types.GenerateContentConfig(temperature=0.0),
+            timeout_seconds=15
         )
         import re
         val = re.sub(r'[^\d-]', '', response.text)
@@ -226,10 +224,6 @@ Based on these notes, output ONLY a single integer representing a risk score adj
         return 0
 
 def __generate_rationale(score, decision, limit, financials, gst_bank_results, news_insights, notes, requested_amount=None):
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key: return f"{decision} based on score {score}."
-    client = genai.Client(api_key=api_key)
-    
     news_summary = ""
     if news_insights:
         news_summary = f"Sentiment: {news_insights.get('sentiment_score', 'Neutral')}. Keywords: {', '.join(news_insights.get('risk_keywords', []))}."
@@ -249,10 +243,11 @@ News/Litigation Risks: {news_summary}
 Make sure to explain WHY it was approved, reviewed, or rejected. If the requested amount is drastically higher than the AI suggested limit, mention that capacity is insufficient.
 """
     try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
+        response = generate_content_with_fallback(
+            model_name='gemini-2.5-flash',
             contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.0)
+            config=types.GenerateContentConfig(temperature=0.0),
+            timeout_seconds=15
         )
         return response.text.strip()
     except Exception as e:

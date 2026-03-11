@@ -19,6 +19,8 @@ loan_details = {
 }
 news = {}
 os.environ.pop("GEMINI_API_KEY", None)
+os.environ.pop("GEMINI_API_KEY_1", None)
+os.environ.pop("GEMINI_API_KEY_2", None)
 
 res = compute_risk_score(financials, gst_bank, news, entity_details={}, loan_details=loan_details)
 print(json.dumps(res, indent=2))
