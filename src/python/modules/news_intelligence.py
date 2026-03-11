@@ -92,8 +92,14 @@ def process_news(news_folder, org_name="Unknown"):
     # Structure Output
     is_litigation = gemini_summary.get("litigation_detection", "No").lower() == "yes" or len(found_keywords) > 0
     
+    sentiment = gemini_summary.get("sentiment_score", "Neutral")
+    if sentiment in ["Unknown", "Neutral", "N/A"] and "penalty" in found_keywords:
+        sentiment = "Negative"
+    elif sentiment in ["Unknown", "N/A"]:
+        sentiment = "Negative" if len(found_keywords) > 0 else "Neutral"
+        
     return {
-        "sentiment_score": gemini_summary.get("sentiment_score", "Neutral"),
+        "sentiment_score": sentiment,
         "litigation_detected": is_litigation,
         "risk_keywords": list(found_keywords)
     }

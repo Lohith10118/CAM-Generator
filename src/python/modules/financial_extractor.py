@@ -25,7 +25,7 @@ def extract_regex_fallbacks(text):
             
     return data
 
-def extract_financials(text, tables_data=None):
+def extract_financials(text, tables_data=None, dynamic_schema=None):
     """
     Use Gemini API to analyze the annual report text and extract structured financial metrics.
     """
@@ -38,19 +38,41 @@ def extract_financials(text, tables_data=None):
     # Using gemini-2.5-flash for fast and cost-effective extraction
     model_name = 'gemini-2.5-flash'
     
-    prompt = """
+    base_schema = {
+        "Organization Name": "...",
+        "Net Profit": "...",
+        "Profit After Tax": "...",
+        "Total Assets": "...",
+        "ROA": "...",
+        "Capital Adequacy Ratio": "...",
+        "Net NPA": "..."
+    }
+    
+    aggregated_data = {
+        "Organization Name": "Unknown",
+        "Net Profit": "N/A",
+        "Profit After Tax": "N/A",
+        "Total Assets": "N/A",
+        "ROA": "N/A",
+        "Capital Adequacy Ratio": "N/A",
+        "Net NPA": "N/A"
+    }
+    
+    if dynamic_schema:
+        custom_fields = [f.strip() for f in dynamic_schema.split(',') if f.strip()]
+        for cf in custom_fields:
+            if cf not in base_schema:
+                base_schema[cf] = "..."
+                aggregated_data[cf] = "N/A"
+                
+    schema_str = json.dumps(base_schema, indent=2)
+    
+    prompt_template = f"""
     You are an expert financial analyst. Please extract the following financial metrics from the provided annual report text.
     If a metric is not found or cannot be determined, return 'N/A'.
     
     Return ONLY a valid JSON object in the EXACT format below, with no additional markdown formatting, comments, or extra text:
-    {
-      "Organization Name": "...",
-      "Net Profit": "...",
-      "Profit After Tax": "...",
-      "ROA": "...",
-      "Capital Adequacy Ratio": "...",
-      "Net NPA": "..."
-    }
+{schema_str}
     
     Annual Report Text (truncating to fit context window if extremely long):
     """
@@ -64,15 +86,6 @@ def extract_financials(text, tables_data=None):
              combined_text = text
     except:
         combined_text = text
-
-    aggregated_data = {
-        "Organization Name": "Unknown",
-        "Net Profit": "N/A",
-        "Profit After Tax": "N/A",
-        "ROA": "N/A",
-        "Capital Adequacy Ratio": "N/A",
-        "Net NPA": "N/A"
-    }
 
     # 1. Regex Fallback Baseline
     aggregated_data.update(extract_regex_fallbacks(combined_text))
@@ -89,7 +102,7 @@ def extract_financials(text, tables_data=None):
     indexer = get_indexer()
     indexer.build_index(text, chunk_size=4000)
     
-    queries = ["Net Profit Revenue", "Return on Assets ROA", "Capital Adequacy Ratio", "Non Performing Assets NPA"]
+    queries = ["Net Profit Revenue", "Return on Assets ROA", "Total Assets", "Capital Adequacy Ratio", "Non Performing Assets NPA"]
     relevant_chunks_set = set()
     for q in queries:
         results = indexer.search(q, top_k=1)
@@ -101,19 +114,13 @@ def extract_financials(text, tables_data=None):
     relevant_chunks = list(relevant_chunks_set) if relevant_chunks_set else all_chunks[:3]
     chunks_to_process = relevant_chunks[:3]
     
-    prompt = """
+    prompt = f"""
     You are an expert financial analyst. Extract the following financial metrics from the provided annual report text chunk.
-    If a metric is not found or cannot be determined, return 'N/A'.
+    If a metric is not explicitly found, attempt to calculate it (e.g., ROA = Net Profit / Total Assets, or CAR = Tier 1 + Tier 2 Capital / Risk-Weighted Assets) if its component mathematical parts are available in the chunk.
+    If a metric is completely unavailable and cannot be calculated, return 'N/A'.
     
     Return ONLY a valid JSON object in the EXACT format below, with no additional markdown formatting, comments, or extra text:
-    {
-      "Organization Name": "...",
-      "Net Profit": "...",
-      "Profit After Tax": "...",
-      "ROA": "...",
-      "Capital Adequacy Ratio": "...",
-      "Net NPA": "..."
-    }
+{schema_str}
     """
     
     for i, chunk_text in enumerate(chunks_to_process):
@@ -152,5 +159,21 @@ def extract_financials(text, tables_data=None):
         except Exception as e:
             print(f"Error processing chunk {i}: {e}")
             continue
+
+    # Cross-fill PAT and Net Profit if one is missing
+    if aggregated_data.get("Profit After Tax") in ["N/A", "Unknown", None] and aggregated_data.get("Net Profit") not in ["N/A", "Unknown", None]:
+        aggregated_data["Profit After Tax"] = aggregated_data["Net Profit"]
+    elif aggregated_data.get("Net Profit") in ["N/A", "Unknown", None] and aggregated_data.get("Profit After Tax") not in ["N/A", "Unknown", None]:
+        aggregated_data["Net Profit"] = aggregated_data["Profit After Tax"]
+        
+    # Calculate ROA if missing but we have Net Profit and Total Assets
+    if aggregated_data.get("ROA") in ["N/A", "Unknown", None] and aggregated_data.get("Net Profit") not in ["N/A", "Unknown", None] and aggregated_data.get("Total Assets") not in ["N/A", "Unknown", None]:
+        try:
+            np_val = float(re.sub(r'[^\d.-]', '', str(aggregated_data["Net Profit"])))
+            ta_val = float(re.sub(r'[^\d.-]', '', str(aggregated_data["Total Assets"])))
+            if ta_val != 0:
+                aggregated_data["ROA"] = f"{round((np_val / ta_val) * 100, 2)}%"
+        except:
+            pass
 
     return aggregated_data

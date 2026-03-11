@@ -97,7 +97,7 @@ def create_table(data, col_widths, style_cmds):
     t.setStyle(TableStyle(base_style))
     return t
 
-def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization"):
+def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", financials=None):
     doc = SimpleDocTemplate(
         output_path, 
         pagesize=letter,
@@ -118,11 +118,15 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization"):
     
     story = []
     
-    # 1. Borrower Overview
-    story.append(get_paragraph("<b>1. Borrower Overview</b>", size=12))
+    # 1. Borrower Overview & Entity Details
+    story.append(get_paragraph("<b>1. Borrower Overview & Entity Details</b>", size=12))
     story.append(Spacer(1, 4))
     b_overview = report_data.get("borrower_overview", {})
+    e_idents = report_data.get("entity_identifiers", {})
     t1_data = [
+        [get_paragraph("<b>Corporate Identity Number (CIN)</b>"), get_paragraph(e_idents.get("cin", "N/A"))],
+        [get_paragraph("<b>Permanent Account Number (PAN)</b>"), get_paragraph(e_idents.get("pan", "N/A"))],
+        [get_paragraph("<b>Sector</b>"), get_paragraph(e_idents.get("sector", "N/A"))],
         [get_paragraph("<b>Business Description</b>"), get_paragraph(b_overview.get("description", ""))],
         [get_paragraph("<b>Industry</b>"), get_paragraph(b_overview.get("industry", ""))],
         [get_paragraph("<b>Key Activities</b>"), get_paragraph(b_overview.get("key_activities", ""))]
@@ -134,13 +138,21 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization"):
     # 2. Financial Performance
     story.append(get_paragraph("<b>2. Financial Performance</b>", size=12))
     story.append(Spacer(1, 4))
-    f_perf = report_data.get("financial_performance", {})
-    t2_data = [
-        [get_paragraph("<b>Net Profit</b>"), get_paragraph(str(f_perf.get("net_profit", "")))],
-        [get_paragraph("<b>Return on Assets (ROA)</b>"), get_paragraph(str(f_perf.get("roa", "")))],
-        [get_paragraph("<b>Net NPA</b>"), get_paragraph(str(f_perf.get("npa", "")))],
-        [get_paragraph("<b>Capital Adequacy Ratio</b>"), get_paragraph(str(f_perf.get("capital_adequacy", "")))]
-    ]
+    
+    t2_data = []
+    if financials:
+        for key, val in financials.items():
+            if key != 'Organization Name':
+                t2_data.append([get_paragraph(f"<b>{key}</b>"), get_paragraph(str(val))])
+    else:
+        f_perf = report_data.get("financial_performance", {})
+        t2_data = [
+            [get_paragraph("<b>Net Profit</b>"), get_paragraph(str(f_perf.get("net_profit", "")))],
+            [get_paragraph("<b>Return on Assets (ROA)</b>"), get_paragraph(str(f_perf.get("roa", "")))],
+            [get_paragraph("<b>Net NPA</b>"), get_paragraph(str(f_perf.get("npa", "")))],
+            [get_paragraph("<b>Capital Adequacy Ratio</b>"), get_paragraph(str(f_perf.get("capital_adequacy", "")))]
+        ]
+        
     t2 = create_table(t2_data, [150, 380], [('BACKGROUND', (0,0), (0,-1), HEADER_GREEN)])
     story.append(t2)
     story.append(Spacer(1, 15))
@@ -199,7 +211,8 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization"):
     
     t6_data = [
         [get_paragraph("<b>Decision</b>"), get_paragraph(decision_val, textColor=dec_color, size=12)],
-        [get_paragraph("<b>Proposed Limit</b>"), get_paragraph(str(rec.get("limit", "")))],
+        [get_paragraph("<b>Requested Facility</b>"), get_paragraph(str(rec.get("requested_facility", "N/A")))],
+        [get_paragraph("<b>AI Proposed Limit</b>"), get_paragraph(str(rec.get("ai_suggested_limit", "")))],
         [get_paragraph("<b>Interest Rate</b>"), get_paragraph(str(rec.get("interest_rate", "")))],
         [get_paragraph("<b>Rationale</b>"), get_paragraph(rec.get("rationale", ""))]
     ]

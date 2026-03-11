@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliCredit AI - Results</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 2 7 12 12 22 7 12 2%22></polygon><polyline points=%222 12 12 17 22 12%22></polyline><polyline points=%222 17 12 22 22 17%22></polyline></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .results-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <header class="navbar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>IntelliCredit AI</span>
+            </div>
+            <div class="user-profile">Corporate Lending Agent</div>
+        </header>
+
+        <main class="main-content results-wrapper">
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                <div class="flash-alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="results-container slide-up">
+                <!-- Top Action Bar -->
+                <div class="results-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"
+                            style="padding: 6px 12px; height: 38px; box-sizing: border-box;">&larr; Back</a>
+                        <h2 style="margin: 0;">Analysis Results for <span style="color: #4F46E5;">{{ organization_name
+                                }}</span></h2>
+                    </div>
+                    <a href="{{ url_for('download_cam') }}" class="btn btn-secondary"
+                        style="height: 38px; box-sizing: border-box;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download CAM
+                    </a>
+                </div>
+
+                <!-- Hero Score Card -->
+                <div class="card score-card {{ decision|lower }}"
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                    <div style="flex: 1;">
+                        <div class="score-header" style="justify-content: flex-start; gap: 16px;">
+                            <span class="label">Total Risk Score</span>
+                            <div class="badge decision-badge">{{ decision }}</div>
+                        </div>
+
+                        <!-- Entity Meta Details -->
+                        {% if entity_details %}
+                        <div style="margin-top: 15px; display: flex; gap: 20px; font-size: 0.9em; color: #475569;">
+                            <div><strong>CIN:</strong> {{ entity_details.get('cin', 'N/A') }}</div>
+                            <div><strong>PAN:</strong> {{ entity_details.get('pan', 'N/A') }}</div>
+                            <div><strong>Sector:</strong> {{ entity_details.get('sector', 'N/A') }}</div>
+                        </div>
+                        {% endif %}
+
+                        <div class="score-body"
+                            style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; margin-top: 15px;">
+                            <div class="score-number">{{ total_score }}<span>/100</span></div>
+                            <div style="display: flex; gap: 32px;">
+                                {% if loan_details %}
+                                <div class="interest-rate"
+                                    style="text-align: left; background: #f8fafc; padding: 10px; border-radius: 8px;">
+                                    <span class="label" style="color: #64748b; font-size: 0.85em;">Requested
+                                        Facility:</span>
+                                    <span class="value" style="font-size: 1.1em;">{{ loan_details.get('type') }} - ₹{{
+                                        loan_details.get('amount') }}Cr</span>
+                                </div>
+                                {% endif %}
+                                <div class="interest-rate" style="text-align: left;">
+                                    <span class="label">AI Suggested Limit:</span>
+                                    <span class="value" style="color: #4F46E5;">{{ limit }}</span>
+                                </div>
+                                <div class="interest-rate" style="text-align: left;">
+                                    <span class="label">AI Suggested Interest:</span>
+                                    <span class="value">{{ interest }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 160px; height: 160px; flex-shrink: 0;">
+                        <canvas id="scoreGauge"></canvas>
+                    </div>
+                </div>
+
+                <!-- Decision Explanation -->
+                <div class="card mt-4" style="border-left: 4px solid var(--primary); background: #eff6ff;">
+                    <h3>Decision Rationale</h3>
+                    <p style="color: var(--text-primary); line-height: 1.5;">{{ explanation }}</p>
+                </div>
+
+                <!-- 5 Cs Breakdown -->
+                <div class="card">
+                    <h3>The Five Cs Assessment</h3>
+                    <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+                        <canvas id="fiveCsRadar"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Financial Integrity Snapshot</h3>
+                    <div class="fin-grid">
+                        {% for key, val in financials.items() %}
+                            {% if key != 'Organization Name' %}
+                            <div class="fin-stat">
+                                <span class="stat-label">{{ key }}</span>
+                                <span class="stat-value">
+                                    {% if 'Profit' in key or 'Amount' in key or 'Revenue' in key or 'Assets' in key %}₹{% endif %}{{ val }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- GST & Bank Reconciliation -->
+                <div class="card mt-4">
+                    <h3>GST vs Bank Reconciliation</h3>
+                    <div style="width: 100%; height: 300px; margin-bottom: 20px;">
+                        <canvas id="gstBankBar"></canvas>
+                    </div>
+                    <div class="fin-grid">
+                        <div class="fin-stat">
+                            <span class="stat-label">Mismatched Months (>15%)</span>
+                            <span class="stat-value">{{ gst_bank_results.get('high_mismatch_months', []) | length
+                                }}</span>
+                        </div>
+                        <div class="fin-stat">
+                            <span class="stat-label">Repeated Counterparties</span>
+                            <span class="stat-value">{{ gst_bank_results.get('suspicious_counterparties', []) | length
+                                }}</span>
+                        </div>
+                        <div class="fin-stat">
+                            <span class="stat-label">ML Anomalies Detected</span>
+                            <span class="stat-value">{{ gst_bank_results.get('anomaly_months', []) | length }}</span>
+                        </div>
+                    </div>
+                    {% if gst_bank_results.get('anomaly_months') %}
+                    <div class="alert mt-3"
+                        style="border-left-color: var(--danger); background: #fef2f2; color: var(--danger);">
+                        <strong>ML Anomalies Flagged in:</strong> {{ gst_bank_results.get('anomaly_months') |
+                        join(', ') }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- External Intelligence -->
+                <div class="card mt-4">
+                    <h3>External News & Intelligence</h3>
+                    <div class="fin-grid">
+                        <div class="fin-stat">
+                            <span class="stat-label">Sentiment</span>
+                            <span class="stat-value">{{ news_insights.get('sentiment_score', 'N/A') }}</span>
+                        </div>
+                        <div class="fin-stat">
+                            <span class="stat-label">Litigation Risk</span>
+                            <span class="stat-value">{{ "Yes" if news_insights.get('litigation_detected') else "No"
+                                }}</span>
+                        </div>
+                    </div>
+                    {% if news_insights.get('risk_keywords') %}
+                    <div class="alert mt-3" style="background: #eff6ff; border-left: 4px solid var(--primary);">
+                        <strong>Detected Risk Keywords:</strong> <span style="color: var(--text-primary);">{{
+                            news_insights.get('risk_keywords') | join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Render Charts -->
+    <script>
+        // 1. Radar Chart for Five Cs
+        const radarContext = document.getElementById('fiveCsRadar').getContext('2d');
+        new Chart(radarContext, {
+            type: 'radar',
+            data: {
+                labels: ['Character (25)', 'Capacity (20)', 'Capital (15)', 'Collateral (15)', 'Conditions (25)'],
+                datasets: [{
+                    label: 'Score Allocation',
+                    data: [{{ character }}, {{ capacity }}, {{ capital }}, {{ collateral }}, {{ conditions }}],
+            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+            borderColor: 'rgba(79, 70, 229, 1)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+                }]
+            },
+            options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 25,
+                    ticks: { stepSize: 5 }
+                }
+            }
+        }
+        });
+
+        // 2. Bar Chart for GST vs Bank
+        const gstBankData = {{ gst_bank_results.get('mismatch_table', []) | tojson }};
+        if (gstBankData && gstBankData.length > 0) {
+            const labels = gstBankData.map(row => row.month);
+            const gstData = gstBankData.map(row => row.gst_revenue);
+            const bankData = gstBankData.map(row => row.bank_inflow);
+
+            const barContext = document.getElementById('gstBankBar').getContext('2d');
+            new Chart(barContext, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'GST Declared',
+                            data: gstData,
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)' // Blue
+                        },
+                        {
+                            label: 'Bank Received',
+                            data: bankData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)' // Green
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 3. Simple Doughnut Gauge for Total Score
+        const gaugeContext = document.getElementById('scoreGauge').getContext('2d');
+        const score = {{ total_score }};
+        const remainder = 100 - score;
+        const color = score > 70 ? '#10B981' : (score > 50 ? '#F59E0B' : '#EF4444');
+
+        new Chart(gaugeContext, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [score, remainder],
+                    backgroundColor: [color, '#E5E7EB'],
+                    borderWidth: 0,
+                    circumference: 180,
+                    rotation: 270
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliCredit AI - Upload</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 2 7 12 12 22 7 12 2%22></polygon><polyline points=%222 12 12 17 22 12%22></polyline><polyline points=%222 17 12 22 22 17%22></polyline></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            background-color: white;
+            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .step.active {
+            color: #4F46E5;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background-color: #eff6ff;
+            border-color: #4F46E5;
+            color: #4F46E5;
+        }
+
+        .step.completed .step-circle {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <header class="navbar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>IntelliCredit AI</span>
+            </div>
+            <div class="user-profile">Corporate Lending Agent</div>
+        </header>
+
+        <main class="main-content">
+            <div class="header-section" style="text-align: center;">
+                <h1>Entity Onboarding & Intelligence</h1>
+                <p>Register the corporate entity, specify loan criteria, and upload documents for AI-driven appraisal.
+                </p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="flash-messages" style="max-width: 800px; margin: 0 auto 24px;">
+                {% for message in messages %}
+                <div class="flash-alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="upload-container">
+                <div class="card glass-card">
+
+                    <div class="step-indicator">
+                        <div class="step active" id="indicator-step-1">
+                            <div class="step-circle">1</div>
+                            <span>Entity Details</span>
+                        </div>
+                        <div class="step" id="indicator-step-2">
+                            <div class="step-circle">2</div>
+                            <span>Loan Request</span>
+                        </div>
+                        <div class="step" id="indicator-step-3">
+                            <div class="step-circle">3</div>
+                            <span>Documents</span>
+                        </div>
+                    </div>
+
+                    <form action="/analyze" method="POST" enctype="multipart/form-data" class="upload-form"
+                        id="onboarding-form">
+
+                        <!-- STEP 1: Entity Details -->
+                        <div class="form-section active" id="section-step-1">
+                            <h2>1. Basic Entity Information</h2>
+                            <p class="help-text" style="margin-bottom: 20px;">Provide preliminary information about the
+                                corporate entity applying for credit.</p>
+
+                            <div class="two-col-grid">
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label for="entity_name">Organization / Entity Name<span class="required">*</span></label>
+                                    <input type="text" id="entity_name" name="entity_name" class="text-input"
+                                        placeholder="e.g. Reliance Industries Limited" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="entity_cin">Corporate Identity Number (CIN)<span
+                                            class="required">*</span></label>
+                                    <input type="text" id="entity_cin" name="entity_cin" class="text-input"
+                                        placeholder="e.g. U72900MH2000PLC123456" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="entity_pan">Permanent Account Number (PAN)<span
+                                            class="required">*</span></label>
+                                    <input type="text" id="entity_pan" name="entity_pan" class="text-input"
+                                        placeholder="e.g. ABCDE1234F" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-transform: uppercase;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="entity_sector">Primary Sector / Industry<span
+                                            class="required">*</span></label>
+                                    <select id="entity_sector" name="entity_sector" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: white;">
+                                        <option value="">Select Sector...</option>
+                                        <option value="Manufacturing">Manufacturing</option>
+                                        <option value="IT Services">IT & Software Services</option>
+                                        <option value="Retail">Retail & FMCG</option>
+                                        <option value="Healthcare">Healthcare & Pharmaceutics</option>
+                                        <option value="Real Estate">Real Estate & Construction</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="entity_turnover">Annual Turnover (Self-Declared in Cr.)<span
+                                            class="required">*</span></label>
+                                    <input type="number" step="0.01" id="entity_turnover" name="entity_turnover"
+                                        class="text-input" placeholder="e.g. 50.5" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                            </div>
+
+                            <div class="form-actions" style="justify-content: flex-end;">
+                                <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                                    <span>Continue to Loan Details</span>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Loan Requirements -->
+                        <div class="form-section" id="section-step-2">
+                            <h2>2. Specific Loan Request</h2>
+                            <p class="help-text" style="margin-bottom: 20px;">Define the parameters of the credit
+                                facility being appraised.</p>
+
+                            <div class="two-col-grid">
+                                <div class="form-group">
+                                    <label for="loan_type">Facility / Loan Type<span class="required">*</span></label>
+                                    <select id="loan_type" name="loan_type" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: white;">
+                                        <option value="">Select Facility...</option>
+                                        <option value="Term Loan">Term Loan</option>
+                                        <option value="Working Capital (CC/OD)">Working Capital (CC/OD)</option>
+                                        <option value="Letter of Credit">Letter of Credit (LC)</option>
+                                        <option value="Bank Guarantee">Bank Guarantee (BG)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="loan_amount">Requested Amount (in Cr.)<span
+                                            class="required">*</span></label>
+                                    <input type="number" step="0.01" id="loan_amount" name="loan_amount"
+                                        class="text-input" placeholder="e.g. 15.0" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="loan_tenure">Proposed Tenure (Months)<span
+                                            class="required">*</span></label>
+                                    <input type="number" id="loan_tenure" name="loan_tenure" class="text-input"
+                                        placeholder="e.g. 60" required
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="loan_interest">Expected Interest Rate (%) <span
+                                            class="optional">(Optional)</span></label>
+                                    <input type="number" step="0.01" id="loan_interest" name="loan_interest"
+                                        class="text-input" placeholder="e.g. 9.5"
+                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="prevStep(1)"
+                                    style="background-color: white; border: 1px solid #cbd5e1; color: #475569;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        style="margin-right: 8px;">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    Back
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                                    <span>Continue to Docs Upload</span>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Document Uploads -->
+                        <div class="form-section" id="section-step-3">
+                            <h2>3. Document Ingestion</h2>
+                            <p class="help-text" style="margin-bottom: 20px;">Upload the required financial documents to
+                                trigger AI classification, extraction, and validation.</p>
+
+                            <div class="form-group">
+                                <label for="unclassified_docs">Unclassified Documents (Bulk Upload)<span class="required">*</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="unclassified_docs" name="unclassified_docs" accept=".pdf,.csv,.xlsx" multiple required>
+                                </div>
+                                <span class="help-text">Upload all documents (Annual Report, GST Returns, Bank Statements, ALM, Shareholding, Borrowing Profile, Portfolio Cuts). AI will auto-classify them.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dynamic_schema">Dynamic Schema Extraction <span class="optional">(Optional)</span></label>
+                                <textarea id="dynamic_schema" name="dynamic_schema" rows="2"
+                                    placeholder="e.g. EBITDA Margin, Total Debt, Operating Cash Flow"
+                                    style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
+                                <span class="help-text">Define custom financial metrics (comma-separated) for the AI to extract.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="news_files">External News/Intel (Text Files) <span
+                                        class="optional">(Optional)</span></label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="news_files" name="news_files" accept=".txt" multiple>
+                                </div>
+                                <span class="help-text">Upload raw .txt news articles for sentiment analysis.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="officer_notes">Credit Officer Notes <span class="optional">(Optional)</span></label>
+                                <textarea id="officer_notes" name="officer_notes" rows="3"
+                                    placeholder="e.g. Factory running at low capacity, recent management changes..."
+                                    style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="prevStep(2)"
+                                    style="background-color: white; border: 1px solid #cbd5e1; color: #475569;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        style="margin-right: 8px;">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    Back
+                                </button>
+                                <button type="button" class="btn btn-primary" style="background-color: #4F46E5;"
+                                    onclick="if(validateStep(3)) { submitForClassification(this); }">
+                                    <span>Classify & Extract Data</span>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <polyline points="19 12 12 19 5 12"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function submitForClassification(btn) {
+            btn.innerHTML = '<span>Uploading & Extracting...</span>';
+            const form = document.getElementById('onboarding-form');
+            form.action = '/process_documents';
+            form.submit();
+            btn.disabled = true;
+        }
+        function validateStep(step) {
+            const section = document.getElementById(`section-step-${step}`);
+            const inputs = section.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value) {
+                    input.style.borderColor = '#ef4444';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '#e2e8f0';
+                }
+            });
+
+            return isValid;
+        }
+
+        function nextStep(step) {
+            if (!validateStep(step - 1)) {
+                return; // Don't proceed if current step is invalid
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            // Remove active class from all indicators
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+
+            // Show target section
+            document.getElementById(`section-step-${step}`).classList.add('active');
+
+            // Update indicators (mark previous as completed, current as active)
+            for (let i = 1; i < step; i++) {
+                document.getElementById(`indicator-step-${i}`).classList.remove('active');
+                document.getElementById(`indicator-step-${i}`).classList.add('completed');
+            }
+            document.getElementById(`indicator-step-${step}`).classList.remove('completed');
+            document.getElementById(`indicator-step-${step}`).classList.add('active');
+        }
+
+        function prevStep(step) {
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            // Remove active class from all indicators
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+
+            // Show target section
+            document.getElementById(`section-step-${step}`).classList.add('active');
+
+            // Update indicators (revert next steps)
+            for (let i = step + 1; i <= 3; i++) {
+                document.getElementById(`indicator-step-${i}`).classList.remove('completed');
+                document.getElementById(`indicator-step-${i}`).classList.remove('active');
+            }
+            document.getElementById(`indicator-step-${step}`).classList.remove('completed');
+            document.getElementById(`indicator-step-${step}`).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

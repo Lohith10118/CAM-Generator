@@ -73,9 +73,29 @@ def extract_financial_tables(pdf_path):
     """
     tables_data = []
     
+    # 1) find relevant pages quickly
+    def _find_financial_pages(p):
+        try:
+            doc = fitz.open(p)
+            keywords = ['balance sheet', 'statement of profit and loss', 'cash flow', 'financial results', 'income statement', 'standalone financial']
+            relevant_pages = []
+            for page_num in range(len(doc)):
+                text = doc.load_page(page_num).get_text("text").lower()
+                if any(k in text for k in keywords) and any(c in text for c in ['crore', 'lakh', 'million', 'thousand', 'in \u20b9', 'in rs']):
+                    relevant_pages.append(str(page_num + 1))
+            
+            if len(relevant_pages) > 20: 
+                relevant_pages = relevant_pages[:20]
+                
+            return ",".join(relevant_pages) if relevant_pages else '1-20'
+        except Exception:
+            return '1-20'
+
+    target_pages = _find_financial_pages(pdf_path)
+    
     # Try Camelot first
     try:
-        camelot_tables = camelot.read_pdf(pdf_path, pages='1-10', flavor='stream')
+        camelot_tables = camelot.read_pdf(pdf_path, pages=target_pages, flavor='stream')
         for i, table in enumerate(camelot_tables):
             if table.df.shape[0] > 1 and table.df.shape[1] > 1:
                 tables_data.append(table.df)
@@ -85,7 +105,7 @@ def extract_financial_tables(pdf_path):
     # Fallback to Tabula if needed
     if not tables_data:
         try:
-            tabula_tables = tabula.read_pdf(pdf_path, pages='1-10', multiple_tables=True)
+            tabula_tables = tabula.read_pdf(pdf_path, pages=target_pages, multiple_tables=True)
             if tabula_tables:
                 for df in tabula_tables:
                     if not df.empty:

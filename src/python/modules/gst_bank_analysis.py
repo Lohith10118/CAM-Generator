@@ -47,12 +47,11 @@ def analyze_gst_bank(gst_file, bank_file):
         gst_df[gst_col_amt] = pd.to_numeric(gst_df[gst_col_amt].astype(str).str.replace(r'[^\d.]', '', regex=True), errors='coerce').fillna(0)
         bank_df[bank_col_amt] = pd.to_numeric(bank_df[bank_col_amt].astype(str).str.replace(r'[^\d.]', '', regex=True), errors='coerce').fillna(0)
         
-        # Aggregation
-        monthly_gst = gst_df.groupby('month')[gst_col_amt].sum().reset_index()
-        monthly_bank = bank_df.groupby('month')[bank_col_amt].sum().reset_index()
+        # Aggregation and Rename BEFORE merge to prevent identical column collisions
+        monthly_gst = gst_df.groupby('month')[gst_col_amt].sum().reset_index().rename(columns={gst_col_amt: 'gst_revenue'})
+        monthly_bank = bank_df.groupby('month')[bank_col_amt].sum().reset_index().rename(columns={bank_col_amt: 'bank_inflow'})
         
         merged = pd.merge(monthly_gst, monthly_bank, on='month', how='outer').fillna(0)
-        merged.rename(columns={gst_col_amt: 'gst_revenue', bank_col_amt: 'bank_inflow'}, inplace=True)
         
         # Mismatch calculation
         merged['mismatch_pct'] = (abs(merged['gst_revenue'] - merged['bank_inflow']) / np.maximum(merged['gst_revenue'], merged['bank_inflow']).replace(0, 1)) * 100
@@ -82,6 +81,11 @@ def analyze_gst_bank(gst_file, bank_file):
             
             anomaly_data = merged[merged['is_anomaly']]
             anomaly_months = anomaly_data['month'].astype(str).tolist()
+
+        # Ensure high mismatches are always flagged as anomalies
+        for m in high_mismatch_months:
+            if m not in anomaly_months:
+                anomaly_months.append(m)
             
         # Format month for JSON serialization
         merged['month'] = merged['month'].astype(str)
