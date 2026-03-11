@@ -39,15 +39,15 @@ def generate_ril_enterprise_data(records=2500):
         
         # Determine if inflow or outflow based on description
         if "REVENUE" in desc or "DEPOSIT" in desc or "EXPORT" in desc:
-            # Massive daily deposits (₹50 Cr to ₹500 Cr per transaction)
-            deposit = round(np.random.uniform(500000000, 5000000000), 2)
+            # Massive daily deposits
+            deposit = round(np.random.uniform(2000000000, 2500000000), 2)
             withdrawal = np.nan
             balance += deposit
             total_inflows += deposit
         else:
             # Massive daily withdrawals for operations/crude
             deposit = np.nan
-            withdrawal = round(np.random.uniform(300000000, 2000000000), 2)
+            withdrawal = round(np.random.uniform(1500000000, 1800000000), 2)
             balance -= withdrawal
             
         bank_data.append([date.strftime('%Y-%m-%d'), desc, ref_no, withdrawal, deposit, balance])

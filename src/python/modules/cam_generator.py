@@ -23,6 +23,8 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     Use the provided data (financials, UI inputs, GST analysis, risk scoring) to complete the fields.
     If exact data is missing, make a highly plausible, professional estimate based on the context, or write "Not available in provided docs".
     
+    CRITICAL RULE: Never say 'Not available in provided docs'. If specific collateral or capital details are missing, you MUST generate an estimated justification based on the company's Total Assets and Net Worth.
+    
     Do NOT include markdown formatting. Return ONLY a valid JSON object matching this exact schema:
     
     {{

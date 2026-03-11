@@ -168,7 +168,7 @@ def compute_risk_score(financials, gst_bank_results, news_insights, officer_note
         
     # Format Limit properly
     if decision == "Reject":
-        limit = "₹0"
+        limit = "Rs. 0"
     elif calculated_capacity_limit > 0:
         limit = f"₹{round(calculated_capacity_limit, 2)} Cr"
     else:
