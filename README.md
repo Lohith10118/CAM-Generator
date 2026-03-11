@@ -1,3 +1,11 @@
+---
+title: Intelli Credit Engine
+emoji: 🦀
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
 # Intelli-Credit AI
 
 AI-powered Credit Decisioning Engine for automated Credit Appraisal Memo (CAM) generation.
