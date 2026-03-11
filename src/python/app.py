@@ -357,5 +357,6 @@ def download_cam():
         return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    # host='0.0.0.0' makes it accessible to the internet
+    # port=7860 is required by Hugging Face Spaces
+    app.run(host='0.0.0.0', port=7860, debug=False)
