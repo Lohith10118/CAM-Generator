@@ -106,7 +106,8 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     )
                             
     try:
-        report_data = json.loads(cam_text)
+        cam_text_safe = cam_text.replace("₹", "Rs. ")
+        report_data = json.loads(cam_text_safe)
     except Exception as e:
         report_data = {"applicant_name": borrower_name}
         
@@ -143,7 +144,8 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     if financials:
         for key, val in financials.items():
             if key != 'Organization Name':
-                t2_data.append([get_paragraph(f"<b>{key}</b>"), get_paragraph(str(val))])
+                safe_val = str(val).replace("₹", "Rs. ")
+                t2_data.append([get_paragraph(f"<b>{key}</b>"), get_paragraph(safe_val)])
     else:
         f_perf = report_data.get("financial_performance", {})
         t2_data = [
