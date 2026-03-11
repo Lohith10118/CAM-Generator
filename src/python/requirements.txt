@@ -21,3 +21,5 @@ faiss-cpu
 camelot-py[cv]
 opencv-python-headless
 tabula-py
+feedparser
+sentence-transformers
