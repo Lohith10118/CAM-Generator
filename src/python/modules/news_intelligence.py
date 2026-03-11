@@ -9,12 +9,16 @@ from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 from duckduckgo_search import DDGS
 
-# Load English NLP model. If missing, print a warning to install.
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    print("Warning: spaCy model 'en_core_web_sm' not found. Please run 'python -m spacy download en_core_web_sm'.")
-    nlp = None
+# NLP model will be loaded lazily to avoid blocking app startup
+nlp = None
+def get_nlp():
+    global nlp
+    if nlp is None:
+        try:
+            nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            print("Warning: spaCy model 'en_core_web_sm' not found. Please run 'python -m spacy download en_core_web_sm'.")
+    return nlp
 
 def process_news(news_folder, org_name="Unknown"):
     """
@@ -69,6 +73,7 @@ def process_news(news_folder, org_name="Unknown"):
     legal_keywords = ["fraud", "lawsuit", "default", "bankruptcy", "litigation", "investigation", "penalty", "violation", "insolvency", "scam", "defaulted"]
     found_keywords = set()
     
+    nlp = get_nlp()
     if nlp:
         doc = nlp(combined_text[:15000]) # avoid huge memory usage, fit within limits
         for ent in doc.ents:
