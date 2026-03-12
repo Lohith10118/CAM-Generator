@@ -73,7 +73,7 @@ def generate_bank_statements():
         bank_data.append([
             current_date.strftime("%Y-%m-%d"), 
             "NEFT/RTGS Client Payment - IT Services", 
-            "", 
+            0.0, 
             round(daily_inflow, 2), 
             round(running_balance, 2)
         ])
@@ -86,7 +86,7 @@ def generate_bank_statements():
             current_date.strftime("%Y-%m-%d"), 
             "RTGS/NEFT Vendor Payment / Payroll / Cloud Hosting", 
             round(daily_outflow, 2), 
-            "", 
+            0.0, 
             round(running_balance, 2)
         ])
         
