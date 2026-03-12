@@ -1,4 +1,3 @@
-import os
 import json
 import re
 import time
@@ -61,16 +60,7 @@ def extract_financials(text, tables_data=None, dynamic_schema=None):
                 
     schema_str = json.dumps(base_schema, indent=2)
     
-    prompt_template = f"""
-    You are an expert financial analyst. Please extract the following financial metrics from the provided annual report text.
-    If a metric is not found or cannot be determined, return 'N/A'.
-    
-    Return ONLY a valid JSON object in the EXACT format below, with no additional markdown formatting, comments, or extra text:
-{schema_str}
-    
-    Annual Report Text (truncating to fit context window if extremely long):
-    """
-    
+
     try:
         # Get raw combined text for regex
         if text.startswith("[{"):
@@ -78,7 +68,7 @@ def extract_financials(text, tables_data=None, dynamic_schema=None):
             combined_text = "\n".join([item['text'] for item in parsed_data])
         else:
              combined_text = text
-    except:
+    except Exception:
         combined_text = text
 
     # 1. Regex Fallback Baseline
@@ -168,7 +158,7 @@ def extract_financials(text, tables_data=None, dynamic_schema=None):
             ta_val = float(re.sub(r'[^\d.-]', '', str(aggregated_data["Total Assets"])))
             if ta_val != 0:
                 aggregated_data["ROA"] = f"{round((np_val / ta_val) * 100, 2)}%"
-        except:
+        except Exception:
             pass
 
     return aggregated_data

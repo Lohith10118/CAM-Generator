@@ -1,8 +1,6 @@
 import os
 import concurrent.futures
 from google import genai
-from google.genai import types
-
 def get_api_keys():
     """Retrieve available Gemini API keys."""
     keys = []

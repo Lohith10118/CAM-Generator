@@ -6,7 +6,6 @@ import json
 import logging
 import camelot
 import tabula
-import pandas as pd
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

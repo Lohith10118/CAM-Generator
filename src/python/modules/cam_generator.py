@@ -1,4 +1,3 @@
-import os
 from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 import json

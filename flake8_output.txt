@@ -1,0 +1,685 @@
+src/python/app.py:3:80: E501 line too long (86 > 79 characters)
+src/python/app.py:11:1: E402 module level import not at top of file
+src/python/app.py:12:1: E402 module level import not at top of file
+src/python/app.py:13:1: E402 module level import not at top of file
+src/python/app.py:14:1: E402 module level import not at top of file
+src/python/app.py:15:1: E402 module level import not at top of file
+src/python/app.py:16:1: E402 module level import not at top of file
+src/python/app.py:17:1: E402 module level import not at top of file
+src/python/app.py:18:1: E402 module level import not at top of file
+src/python/app.py:19:1: E402 module level import not at top of file
+src/python/app.py:19:1: F811 redefinition of unused 'compute_risk_score' from line 15
+src/python/app.py:20:1: E402 module level import not at top of file
+src/python/app.py:20:1: F811 redefinition of unused 'generate_cam' from line 16
+src/python/app.py:21:1: E402 module level import not at top of file
+src/python/app.py:21:1: F811 redefinition of unused 'create_cam_pdf' from line 17
+src/python/app.py:33:1: E302 expected 2 blank lines, found 1
+src/python/app.py:37:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/app.py:37:1: E402 module level import not at top of file
+src/python/app.py:40:1: E402 module level import not at top of file
+src/python/app.py:41:1: E402 module level import not at top of file
+src/python/app.py:43:80: E501 line too long (114 > 79 characters)
+src/python/app.py:46:1: E302 expected 2 blank lines, found 1
+src/python/app.py:46:80: E501 line too long (132 > 79 characters)
+src/python/app.py:48:80: E501 line too long (89 > 79 characters)
+src/python/app.py:54:1: W293 blank line contains whitespace
+src/python/app.py:59:80: E501 line too long (88 > 79 characters)
+src/python/app.py:61:1: W293 blank line contains whitespace
+src/python/app.py:63:14: E111 indentation is not a multiple of four
+src/python/app.py:63:14: E117 over-indented
+src/python/app.py:64:18: E111 indentation is not a multiple of four
+src/python/app.py:65:22: E111 indentation is not a multiple of four
+src/python/app.py:66:22: E111 indentation is not a multiple of four
+src/python/app.py:67:22: E111 indentation is not a multiple of four
+src/python/app.py:68:1: W293 blank line contains whitespace
+src/python/app.py:71:80: E501 line too long (114 > 79 characters)
+src/python/app.py:74:80: E501 line too long (116 > 79 characters)
+src/python/app.py:77:1: W293 blank line contains whitespace
+src/python/app.py:80:80: E501 line too long (134 > 79 characters)
+src/python/app.py:82:1: W293 blank line contains whitespace
+src/python/app.py:83:80: E501 line too long (123 > 79 characters)
+src/python/app.py:84:1: W293 blank line contains whitespace
+src/python/app.py:85:80: E501 line too long (118 > 79 characters)
+src/python/app.py:87:1: W293 blank line contains whitespace
+src/python/app.py:88:80: E501 line too long (93 > 79 characters)
+src/python/app.py:89:80: E501 line too long (94 > 79 characters)
+src/python/app.py:92:1: W293 blank line contains whitespace
+src/python/app.py:93:80: E501 line too long (116 > 79 characters)
+src/python/app.py:94:1: W293 blank line contains whitespace
+src/python/app.py:96:1: W293 blank line contains whitespace
+src/python/app.py:106:1: W293 blank line contains whitespace
+src/python/app.py:111:80: E501 line too long (92 > 79 characters)
+src/python/app.py:113:1: E302 expected 2 blank lines, found 1
+src/python/app.py:122:80: E501 line too long (89 > 79 characters)
+src/python/app.py:124:13: F841 local variable 'e' is assigned to but never used
+src/python/app.py:140:1: W293 blank line contains whitespace
+src/python/app.py:158:1: W293 blank line contains whitespace
+src/python/app.py:166:80: E501 line too long (132 > 79 characters)
+src/python/app.py:167:80: E501 line too long (105 > 79 characters)
+src/python/app.py:177:80: E501 line too long (94 > 79 characters)
+src/python/app.py:186:1: W293 blank line contains whitespace
+src/python/app.py:187:80: E501 line too long (101 > 79 characters)
+src/python/app.py:192:1: W293 blank line contains whitespace
+src/python/app.py:194:80: E501 line too long (105 > 79 characters)
+src/python/app.py:196:25: E261 at least two spaces before inline comment
+src/python/app.py:198:1: W293 blank line contains whitespace
+src/python/app.py:201:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/app.py:201:1: E402 module level import not at top of file
+src/python/app.py:203:1: E302 expected 2 blank lines, found 1
+src/python/app.py:210:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/app.py:210:1: E402 module level import not at top of file
+src/python/app.py:214:80: E501 line too long (86 > 79 characters)
+src/python/app.py:225:1: W293 blank line contains whitespace
+src/python/app.py:232:1: W293 blank line contains whitespace
+src/python/app.py:236:1: W293 blank line contains whitespace
+src/python/app.py:239:1: W293 blank line contains whitespace
+src/python/app.py:264:1: W293 blank line contains whitespace
+src/python/app.py:271:1: W293 blank line contains whitespace
+src/python/app.py:289:80: E501 line too long (82 > 79 characters)
+src/python/app.py:291:80: E501 line too long (83 > 79 characters)
+src/python/app.py:293:80: E501 line too long (106 > 79 characters)
+src/python/app.py:294:80: E501 line too long (133 > 79 characters)
+src/python/app.py:298:14: E111 indentation is not a multiple of four
+src/python/app.py:298:14: E117 over-indented
+src/python/app.py:298:80: E501 line too long (123 > 79 characters)
+src/python/app.py:299:18: E111 indentation is not a multiple of four
+src/python/app.py:300:9: E722 do not use bare 'except'
+src/python/app.py:301:14: E111 indentation is not a multiple of four
+src/python/app.py:301:14: E117 over-indented
+src/python/app.py:304:80: E501 line too long (94 > 79 characters)
+src/python/app.py:305:80: E501 line too long (87 > 79 characters)
+src/python/app.py:306:1: W293 blank line contains whitespace
+src/python/app.py:309:80: E501 line too long (101 > 79 characters)
+src/python/app.py:310:1: W293 blank line contains whitespace
+src/python/app.py:313:1: W293 blank line contains whitespace
+src/python/app.py:316:80: E501 line too long (96 > 79 characters)
+src/python/app.py:317:80: E501 line too long (80 > 79 characters)
+src/python/app.py:319:80: E501 line too long (131 > 79 characters)
+src/python/app.py:320:1: W293 blank line contains whitespace
+src/python/app.py:323:80: E501 line too long (140 > 79 characters)
+src/python/app.py:324:1: W293 blank line contains whitespace
+src/python/app.py:326:80: E501 line too long (82 > 79 characters)
+src/python/app.py:327:80: E501 line too long (87 > 79 characters)
+src/python/app.py:328:80: E501 line too long (170 > 79 characters)
+src/python/app.py:329:1: W293 blank line contains whitespace
+src/python/app.py:347:80: E501 line too long (90 > 79 characters)
+src/python/app.py:351:1: W293 blank line contains whitespace
+src/python/app.py:358:1: E302 expected 2 blank lines, found 1
+src/python/app.py:362:80: E501 line too long (101 > 79 characters)
+src/python/app.py:367:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/app.py:370:52: W292 no newline at end of file
+src/python/generate_techm_data.py:11:80: E501 line too long (84 > 79 characters)
+src/python/generate_techm_data.py:12:35: W291 trailing whitespace
+src/python/generate_techm_data.py:14:1: E302 expected 2 blank lines, found 1
+src/python/generate_techm_data.py:15:80: E501 line too long (85 > 79 characters)
+src/python/generate_techm_data.py:15:86: W291 trailing whitespace
+src/python/generate_techm_data.py:16:80: E501 line too long (85 > 79 characters)
+src/python/generate_techm_data.py:17:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:23:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:27:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:30:32: E261 at least two spaces before inline comment
+src/python/generate_techm_data.py:35:19: W291 trailing whitespace
+src/python/generate_techm_data.py:36:35: W291 trailing whitespace
+src/python/generate_techm_data.py:37:38: W291 trailing whitespace
+src/python/generate_techm_data.py:39:28: W291 trailing whitespace
+src/python/generate_techm_data.py:40:28: W291 trailing whitespace
+src/python/generate_techm_data.py:43:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:45:67: W291 trailing whitespace
+src/python/generate_techm_data.py:48:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:53:1: E302 expected 2 blank lines, found 1
+src/python/generate_techm_data.py:57:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:59:37: W291 trailing whitespace
+src/python/generate_techm_data.py:60:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:62:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:68:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:74:47: W291 trailing whitespace
+src/python/generate_techm_data.py:75:54: W291 trailing whitespace
+src/python/generate_techm_data.py:76:17: W291 trailing whitespace
+src/python/generate_techm_data.py:77:36: W291 trailing whitespace
+src/python/generate_techm_data.py:80:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:82:55: W291 trailing whitespace
+src/python/generate_techm_data.py:86:47: W291 trailing whitespace
+src/python/generate_techm_data.py:87:66: W291 trailing whitespace
+src/python/generate_techm_data.py:88:37: W291 trailing whitespace
+src/python/generate_techm_data.py:89:17: W291 trailing whitespace
+src/python/generate_techm_data.py:92:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:94:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:95:80: E501 line too long (99 > 79 characters)
+src/python/generate_techm_data.py:96:1: W293 blank line contains whitespace
+src/python/generate_techm_data.py:101:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/generate_techm_data.py:103:31: W292 no newline at end of file
+src/python/reliance.py:6:1: E302 expected 2 blank lines, found 1
+src/python/reliance.py:8:1: W293 blank line contains whitespace
+src/python/reliance.py:13:1: W293 blank line contains whitespace
+src/python/reliance.py:16:1: W293 blank line contains whitespace
+src/python/reliance.py:22:1: W293 blank line contains whitespace
+src/python/reliance.py:23:80: E501 line too long (92 > 79 characters)
+src/python/reliance.py:25:1: W293 blank line contains whitespace
+src/python/reliance.py:28:80: E501 line too long (92 > 79 characters)
+src/python/reliance.py:29:80: E501 line too long (80 > 79 characters)
+src/python/reliance.py:31:1: W293 blank line contains whitespace
+src/python/reliance.py:35:1: W293 blank line contains whitespace
+src/python/reliance.py:39:1: W293 blank line contains whitespace
+src/python/reliance.py:52:1: W293 blank line contains whitespace
+src/python/reliance.py:53:80: E501 line too long (97 > 79 characters)
+src/python/reliance.py:55:80: E501 line too long (122 > 79 characters)
+src/python/reliance.py:58:1: W293 blank line contains whitespace
+src/python/reliance.py:63:1: W293 blank line contains whitespace
+src/python/reliance.py:66:1: W293 blank line contains whitespace
+src/python/reliance.py:68:80: E501 line too long (86 > 79 characters)
+src/python/reliance.py:69:1: W293 blank line contains whitespace
+src/python/reliance.py:75:1: W293 blank line contains whitespace
+src/python/reliance.py:77:1: W293 blank line contains whitespace
+src/python/reliance.py:80:59: E261 at least two spaces before inline comment
+src/python/reliance.py:82:52: E261 at least two spaces before inline comment
+src/python/reliance.py:83:1: W293 blank line contains whitespace
+src/python/reliance.py:87:80: E501 line too long (105 > 79 characters)
+src/python/reliance.py:90:1: W293 blank line contains whitespace
+src/python/reliance.py:94:80: E501 line too long (96 > 79 characters)
+src/python/reliance.py:96:80: E501 line too long (85 > 79 characters)
+src/python/reliance.py:97:80: E501 line too long (119 > 79 characters)
+src/python/reliance.py:99:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/reliance.py:100:47: W292 no newline at end of file
+src/python/tata_data_factory.py:6:1: E302 expected 2 blank lines, found 1
+src/python/tata_data_factory.py:8:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:10:80: E501 line too long (89 > 79 characters)
+src/python/tata_data_factory.py:14:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:18:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:22:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:23:80: E501 line too long (92 > 79 characters)
+src/python/tata_data_factory.py:25:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:27:80: E501 line too long (82 > 79 characters)
+src/python/tata_data_factory.py:30:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:34:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:38:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:48:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:49:80: E501 line too long (97 > 79 characters)
+src/python/tata_data_factory.py:51:80: E501 line too long (122 > 79 characters)
+src/python/tata_data_factory.py:54:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:57:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:59:51: W291 trailing whitespace
+src/python/tata_data_factory.py:61:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:64:80: E501 line too long (95 > 79 characters)
+src/python/tata_data_factory.py:66:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:70:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:73:80: E501 line too long (105 > 79 characters)
+src/python/tata_data_factory.py:76:1: W293 blank line contains whitespace
+src/python/tata_data_factory.py:77:80: E501 line too long (89 > 79 characters)
+src/python/tata_data_factory.py:79:80: E501 line too long (84 > 79 characters)
+src/python/tata_data_factory.py:80:80: E501 line too long (109 > 79 characters)
+src/python/tata_data_factory.py:82:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/tata_data_factory.py:83:43: W292 no newline at end of file
+src/python/test_pipeline.py:1:1: F401 'sys' imported but unused
+src/python/test_pipeline.py:1:11: E401 multiple imports on one line
+src/python/test_pipeline.py:2:1: F401 'pandas as pd' imported but unused
+src/python/test_pipeline.py:9:80: E501 line too long (94 > 79 characters)
+src/python/modules\cam_generator.py:1:1: F401 'os' imported but unused
+src/python/modules\cam_generator.py:7:1: E302 expected 2 blank lines, found 1
+src/python/modules\cam_generator.py:7:80: E501 line too long (127 > 79 characters)
+src/python/modules\cam_generator.py:9:80: E501 line too long (87 > 79 characters)
+src/python/modules\cam_generator.py:12:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:15:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:17:80: E501 line too long (129 > 79 characters)
+src/python/modules\cam_generator.py:18:80: E501 line too long (101 > 79 characters)
+src/python/modules\cam_generator.py:19:80: E501 line too long (141 > 79 characters)
+src/python/modules\cam_generator.py:20:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:21:80: E501 line too long (213 > 79 characters)
+src/python/modules\cam_generator.py:22:80: E501 line too long (111 > 79 characters)
+src/python/modules\cam_generator.py:23:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:24:80: E501 line too long (164 > 79 characters)
+src/python/modules\cam_generator.py:25:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:26:80: E501 line too long (99 > 79 characters)
+src/python/modules\cam_generator.py:27:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:29:80: E501 line too long (118 > 79 characters)
+src/python/modules\cam_generator.py:77:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:79:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:82:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:85:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:88:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:91:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:93:80: E501 line too long (125 > 79 characters)
+src/python/modules\cam_generator.py:94:80: E501 line too long (115 > 79 characters)
+src/python/modules\cam_generator.py:95:80: E501 line too long (103 > 79 characters)
+src/python/modules\cam_generator.py:96:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:99:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:100:80: E501 line too long (162 > 79 characters)
+src/python/modules\cam_generator.py:101:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:104:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:107:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:123:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:128:1: W293 blank line contains whitespace
+src/python/modules\cam_generator.py:135:80: E501 line too long (106 > 79 characters)
+src/python/modules\cam_generator.py:141:80: E501 line too long (168 > 79 characters)
+src/python/modules\cam_generator.py:143:80: E501 line too long (91 > 79 characters)
+src/python/modules\cam_generator.py:143:92: W291 trailing whitespace
+src/python/modules\cam_generator.py:144:78: W291 trailing whitespace
+src/python/modules\cam_generator.py:145:80: E501 line too long (81 > 79 characters)
+src/python/modules\cam_generator.py:145:82: W291 trailing whitespace
+src/python/modules\cam_generator.py:146:80: E501 line too long (108 > 79 characters)
+src/python/modules\cam_generator.py:149:80: E501 line too long (158 > 79 characters)
+src/python/modules\cam_generator.py:149:159: W291 trailing whitespace
+src/python/modules\cam_generator.py:150:80: E501 line too long (140 > 79 characters)
+src/python/modules\cam_generator.py:150:141: W291 trailing whitespace
+src/python/modules\cam_generator.py:151:80: E501 line too long (134 > 79 characters)
+src/python/modules\cam_generator.py:154:80: E501 line too long (111 > 79 characters)
+src/python/modules\cam_generator.py:154:112: W291 trailing whitespace
+src/python/modules\cam_generator.py:155:80: E501 line too long (114 > 79 characters)
+src/python/modules\cam_generator.py:155:115: W291 trailing whitespace
+src/python/modules\cam_generator.py:156:80: E501 line too long (155 > 79 characters)
+src/python/modules\cam_generator.py:159:80: E501 line too long (104 > 79 characters)
+src/python/modules\cam_generator.py:159:105: W291 trailing whitespace
+src/python/modules\cam_generator.py:160:80: E501 line too long (102 > 79 characters)
+src/python/modules\cam_generator.py:160:103: W291 trailing whitespace
+src/python/modules\cam_generator.py:161:80: E501 line too long (100 > 79 characters)
+src/python/modules\cam_generator.py:161:101: W291 trailing whitespace
+src/python/modules\cam_generator.py:162:80: E501 line too long (106 > 79 characters)
+src/python/modules\cam_generator.py:162:107: W291 trailing whitespace
+src/python/modules\cam_generator.py:163:80: E501 line too long (105 > 79 characters)
+src/python/modules\cam_generator.py:172:80: E501 line too long (95 > 79 characters)
+src/python/modules\cam_generator.py:173:80: E501 line too long (143 > 79 characters)
+src/python/modules\cam_generator.py:174:80: E501 line too long (98 > 79 characters)
+src/python/modules\cam_generator.py:175:80: E501 line too long (101 > 79 characters)
+src/python/modules\cam_generator.py:176:80: E501 line too long (160 > 79 characters)
+src/python/modules\document_classifier.py:9:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_classifier.py:16:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:27:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:30:80: E501 line too long (130 > 79 characters)
+src/python/modules\document_classifier.py:32:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:33:80: E501 line too long (81 > 79 characters)
+src/python/modules\document_classifier.py:37:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:42:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:46:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:54:80: E501 line too long (98 > 79 characters)
+src/python/modules\document_classifier.py:54:83: E261 at least two spaces before inline comment
+src/python/modules\document_classifier.py:65:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:70:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:82:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:87:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:91:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:97:1: W293 blank line contains whitespace
+src/python/modules\document_classifier.py:101:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:9:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_indexer.py:16:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:19:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:26:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:29:80: E501 line too long (113 > 79 characters)
+src/python/modules\document_indexer.py:32:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:37:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:40:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:49:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:56:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:59:80: E501 line too long (99 > 79 characters)
+src/python/modules\document_indexer.py:60:1: W293 blank line contains whitespace
+src/python/modules\document_indexer.py:71:1: E305 expected 2 blank lines after class or function definition, found 1
+src/python/modules\document_indexer.py:73:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_processor.py:9:1: F401 'pandas as pd' imported but unused
+src/python/modules\document_processor.py:14:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_processor.py:22:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:27:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:45:80: E501 line too long (88 > 79 characters)
+src/python/modules\document_processor.py:46:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:49:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:54:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_processor.py:60:80: E501 line too long (109 > 79 characters)
+src/python/modules\document_processor.py:67:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:70:1: E302 expected 2 blank lines, found 1
+src/python/modules\document_processor.py:76:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:81:80: E501 line too long (150 > 79 characters)
+src/python/modules\document_processor.py:85:80: E501 line too long (143 > 79 characters)
+src/python/modules\document_processor.py:87:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:88:41: W291 trailing whitespace
+src/python/modules\document_processor.py:90:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:96:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:99:80: E501 line too long (88 > 79 characters)
+src/python/modules\document_processor.py:105:1: W293 blank line contains whitespace
+src/python/modules\document_processor.py:109:80: E501 line too long (95 > 79 characters)
+src/python/modules\financial_extractor.py:1:1: F401 'os' imported but unused
+src/python/modules\financial_extractor.py:9:1: E302 expected 2 blank lines, found 1
+src/python/modules\financial_extractor.py:12:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:20:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:25:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:28:1: E302 expected 2 blank lines, found 1
+src/python/modules\financial_extractor.py:30:80: E501 line too long (94 > 79 characters)
+src/python/modules\financial_extractor.py:34:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:44:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:54:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:56:80: E501 line too long (83 > 79 characters)
+src/python/modules\financial_extractor.py:61:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:63:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:64:5: F841 local variable 'prompt_template' is assigned to but never used
+src/python/modules\financial_extractor.py:65:80: E501 line too long (125 > 79 characters)
+src/python/modules\financial_extractor.py:67:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:68:80: E501 line too long (127 > 79 characters)
+src/python/modules\financial_extractor.py:70:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:73:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:80:14: E111 indentation is not a multiple of four
+src/python/modules\financial_extractor.py:80:14: E117 over-indented
+src/python/modules\financial_extractor.py:81:5: E722 do not use bare 'except'
+src/python/modules\financial_extractor.py:92:80: E501 line too long (81 > 79 characters)
+src/python/modules\financial_extractor.py:93:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:98:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:99:80: E501 line too long (131 > 79 characters)
+src/python/modules\financial_extractor.py:105:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:108:80: E501 line too long (90 > 79 characters)
+src/python/modules\financial_extractor.py:110:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:112:80: E501 line too long (124 > 79 characters)
+src/python/modules\financial_extractor.py:113:80: E501 line too long (225 > 79 characters)
+src/python/modules\financial_extractor.py:114:80: E501 line too long (81 > 79 characters)
+src/python/modules\financial_extractor.py:115:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:116:80: E501 line too long (127 > 79 characters)
+src/python/modules\financial_extractor.py:119:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:135:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:140:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:144:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:146:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:149:80: E501 line too long (147 > 79 characters)
+src/python/modules\financial_extractor.py:151:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:153:30: E261 at least two spaces before inline comment
+src/python/modules\financial_extractor.py:159:80: E501 line too long (145 > 79 characters)
+src/python/modules\financial_extractor.py:161:80: E501 line too long (147 > 79 characters)
+src/python/modules\financial_extractor.py:163:1: W293 blank line contains whitespace
+src/python/modules\financial_extractor.py:165:80: E501 line too long (204 > 79 characters)
+src/python/modules\financial_extractor.py:167:80: E501 line too long (86 > 79 characters)
+src/python/modules\financial_extractor.py:168:80: E501 line too long (88 > 79 characters)
+src/python/modules\financial_extractor.py:170:80: E501 line too long (80 > 79 characters)
+src/python/modules\financial_extractor.py:171:9: E722 do not use bare 'except'
+src/python/modules\gemini_client.py:4:1: F401 'google.genai.types' imported but unused
+src/python/modules\gemini_client.py:6:1: E302 expected 2 blank lines, found 1
+src/python/modules\gemini_client.py:14:1: W293 blank line contains whitespace
+src/python/modules\gemini_client.py:23:1: W293 blank line contains whitespace
+src/python/modules\gemini_client.py:26:1: E302 expected 2 blank lines, found 1
+src/python/modules\gemini_client.py:34:1: E302 expected 2 blank lines, found 1
+src/python/modules\gemini_client.py:34:80: E501 line too long (90 > 79 characters)
+src/python/modules\gemini_client.py:37:80: E501 line too long (82 > 79 characters)
+src/python/modules\gemini_client.py:46:80: E501 line too long (82 > 79 characters)
+src/python/modules\gemini_client.py:47:80: E501 line too long (91 > 79 characters)
+src/python/modules\gemini_client.py:52:80: E501 line too long (127 > 79 characters)
+src/python/modules\gemini_client.py:56:80: E501 line too long (110 > 79 characters)
+src/python/modules\gemini_client.py:59:1: W293 blank line contains whitespace
+src/python/modules\gemini_client.py:60:80: E501 line too long (85 > 79 characters)
+src/python/modules\gst_bank_analysis.py:5:1: E302 expected 2 blank lines, found 1
+src/python/modules\gst_bank_analysis.py:7:80: E501 line too long (80 > 79 characters)
+src/python/modules\gst_bank_analysis.py:16:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:20:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:22:80: E501 line too long (110 > 79 characters)
+src/python/modules\gst_bank_analysis.py:23:80: E501 line too long (128 > 79 characters)
+src/python/modules\gst_bank_analysis.py:24:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:25:80: E501 line too long (94 > 79 characters)
+src/python/modules\gst_bank_analysis.py:26:80: E501 line too long (132 > 79 characters)
+src/python/modules\gst_bank_analysis.py:27:80: E501 line too long (147 > 79 characters)
+src/python/modules\gst_bank_analysis.py:28:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:29:80: E501 line too long (88 > 79 characters)
+src/python/modules\gst_bank_analysis.py:34:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:36:80: E501 line too long (85 > 79 characters)
+src/python/modules\gst_bank_analysis.py:37:80: E501 line too long (88 > 79 characters)
+src/python/modules\gst_bank_analysis.py:38:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:41:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:45:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:47:80: E501 line too long (142 > 79 characters)
+src/python/modules\gst_bank_analysis.py:48:80: E501 line too long (146 > 79 characters)
+src/python/modules\gst_bank_analysis.py:49:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:50:80: E501 line too long (84 > 79 characters)
+src/python/modules\gst_bank_analysis.py:51:80: E501 line too long (123 > 79 characters)
+src/python/modules\gst_bank_analysis.py:52:80: E501 line too long (127 > 79 characters)
+src/python/modules\gst_bank_analysis.py:53:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:54:80: E501 line too long (87 > 79 characters)
+src/python/modules\gst_bank_analysis.py:55:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:57:80: E501 line too long (164 > 79 characters)
+src/python/modules\gst_bank_analysis.py:59:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:60:80: E501 line too long (86 > 79 characters)
+src/python/modules\gst_bank_analysis.py:61:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:68:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:71:29: E261 at least two spaces before inline comment
+src/python/modules\gst_bank_analysis.py:73:80: E501 line too long (87 > 79 characters)
+src/python/modules\gst_bank_analysis.py:74:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:78:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:81:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:89:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:92:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:100:1: W293 blank line contains whitespace
+src/python/modules\gst_bank_analysis.py:105:1: E302 expected 2 blank lines, found 1
+src/python/modules\news_intelligence.py:6:1: F401 'requests' imported but unused
+src/python/modules\news_intelligence.py:8:1: F401 'bs4.BeautifulSoup' imported but unused
+src/python/modules\news_intelligence.py:15:1: E302 expected 2 blank lines, found 0
+src/python/modules\news_intelligence.py:21:80: E501 line too long (123 > 79 characters)
+src/python/modules\news_intelligence.py:24:1: E302 expected 2 blank lines, found 1
+src/python/modules\news_intelligence.py:32:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:47:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:50:80: E501 line too long (120 > 79 characters)
+src/python/modules\news_intelligence.py:56:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:60:80: E501 line too long (95 > 79 characters)
+src/python/modules\news_intelligence.py:65:80: E501 line too long (125 > 79 characters)
+src/python/modules\news_intelligence.py:82:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:85:80: E501 line too long (156 > 79 characters)
+src/python/modules\news_intelligence.py:87:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:90:41: E261 at least two spaces before inline comment
+src/python/modules\news_intelligence.py:90:80: E501 line too long (85 > 79 characters)
+src/python/modules\news_intelligence.py:94:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:105:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:108:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:110:5: F841 local variable 'is_litigation' is assigned to but never used
+src/python/modules\news_intelligence.py:110:80: E501 line too long (112 > 79 characters)
+src/python/modules\news_intelligence.py:111:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:113:80: E501 line too long (82 > 79 characters)
+src/python/modules\news_intelligence.py:117:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:125:1: E302 expected 2 blank lines, found 1
+src/python/modules\news_intelligence.py:127:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:129:80: E501 line too long (87 > 79 characters)
+src/python/modules\news_intelligence.py:131:80: E501 line too long (89 > 79 characters)
+src/python/modules\news_intelligence.py:134:80: E501 line too long (86 > 79 characters)
+src/python/modules\news_intelligence.py:135:80: E501 line too long (83 > 79 characters)
+src/python/modules\news_intelligence.py:137:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:140:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:144:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:154:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:159:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:163:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:165:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:167:80: E501 line too long (82 > 79 characters)
+src/python/modules\news_intelligence.py:170:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:172:1: W293 blank line contains whitespace
+src/python/modules\news_intelligence.py:181:1: E302 expected 2 blank lines, found 1
+src/python/modules\pdf_report_generator.py:4:80: E501 line too long (86 > 79 characters)
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_JUSTIFY' imported but unused
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_RIGHT' imported but unused
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_CENTER' imported but unused
+src/python/modules\pdf_report_generator.py:6:1: F401 'reportlab.pdfgen.canvas' imported but unused
+src/python/modules\pdf_report_generator.py:11:46: E261 at least two spaces before inline comment
+src/python/modules\pdf_report_generator.py:16:1: E302 expected 2 blank lines, found 1
+src/python/modules\pdf_report_generator.py:16:17: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\pdf_report_generator.py:18:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:21:80: E501 line too long (88 > 79 characters)
+src/python/modules\pdf_report_generator.py:22:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:26:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:30:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:37:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:42:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:45:1: E302 expected 2 blank lines, found 1
+src/python/modules\pdf_report_generator.py:45:17: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\pdf_report_generator.py:47:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:52:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:56:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:60:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:65:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:69:80: E501 line too long (115 > 79 characters)
+src/python/modules\pdf_report_generator.py:83:1: E302 expected 2 blank lines, found 1
+src/python/modules\pdf_report_generator.py:87:20: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:87:28: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:88:24: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:88:32: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:89:24: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:89:32: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:90:22: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:90:30: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:91:29: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:91:37: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:92:26: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:92:34: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:93:27: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:93:35: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:94:28: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:94:36: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:100:1: E302 expected 2 blank lines, found 1
+src/python/modules\pdf_report_generator.py:100:80: E501 line too long (140 > 79 characters)
+src/python/modules\pdf_report_generator.py:102:21: W291 trailing whitespace
+src/python/modules\pdf_report_generator.py:105:38: W291 trailing whitespace
+src/python/modules\pdf_report_generator.py:107:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:111:5: F841 local variable 'e' is assigned to but never used
+src/python/modules\pdf_report_generator.py:113:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:119:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:121:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:125:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:127:80: E501 line too long (88 > 79 characters)
+src/python/modules\pdf_report_generator.py:132:80: E501 line too long (109 > 79 characters)
+src/python/modules\pdf_report_generator.py:133:80: E501 line too long (108 > 79 characters)
+src/python/modules\pdf_report_generator.py:134:80: E501 line too long (87 > 79 characters)
+src/python/modules\pdf_report_generator.py:135:80: E501 line too long (105 > 79 characters)
+src/python/modules\pdf_report_generator.py:136:80: E501 line too long (90 > 79 characters)
+src/python/modules\pdf_report_generator.py:137:80: E501 line too long (101 > 79 characters)
+src/python/modules\pdf_report_generator.py:139:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:139:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:139:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:142:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:146:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:152:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:156:80: E501 line too long (99 > 79 characters)
+src/python/modules\pdf_report_generator.py:157:80: E501 line too long (104 > 79 characters)
+src/python/modules\pdf_report_generator.py:158:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:159:80: E501 line too long (116 > 79 characters)
+src/python/modules\pdf_report_generator.py:161:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:162:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:162:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:162:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:165:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:167:80: E501 line too long (85 > 79 characters)
+src/python/modules\pdf_report_generator.py:171:80: E501 line too long (113 > 79 characters)
+src/python/modules\pdf_report_generator.py:172:80: E501 line too long (213 > 79 characters)
+src/python/modules\pdf_report_generator.py:173:80: E501 line too long (228 > 79 characters)
+src/python/modules\pdf_report_generator.py:175:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:175:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:175:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:178:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:180:80: E501 line too long (95 > 79 characters)
+src/python/modules\pdf_report_generator.py:184:80: E501 line too long (97 > 79 characters)
+src/python/modules\pdf_report_generator.py:185:80: E501 line too long (106 > 79 characters)
+src/python/modules\pdf_report_generator.py:186:80: E501 line too long (98 > 79 characters)
+src/python/modules\pdf_report_generator.py:188:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:188:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:188:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:191:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:193:80: E501 line too long (83 > 79 characters)
+src/python/modules\pdf_report_generator.py:197:80: E501 line too long (94 > 79 characters)
+src/python/modules\pdf_report_generator.py:198:80: E501 line too long (92 > 79 characters)
+src/python/modules\pdf_report_generator.py:199:80: E501 line too long (90 > 79 characters)
+src/python/modules\pdf_report_generator.py:200:80: E501 line too long (96 > 79 characters)
+src/python/modules\pdf_report_generator.py:201:80: E501 line too long (95 > 79 characters)
+src/python/modules\pdf_report_generator.py:203:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:203:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:203:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:206:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:212:80: E501 line too long (86 > 79 characters)
+src/python/modules\pdf_report_generator.py:213:80: E501 line too long (88 > 79 characters)
+src/python/modules\pdf_report_generator.py:214:80: E501 line too long (94 > 79 characters)
+src/python/modules\pdf_report_generator.py:215:80: E501 line too long (81 > 79 characters)
+src/python/modules\pdf_report_generator.py:217:70: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:217:77: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:217:80: E501 line too long (97 > 79 characters)
+src/python/modules\pdf_report_generator.py:222:80: E501 line too long (81 > 79 characters)
+src/python/modules\pdf_report_generator.py:225:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:229:41: E701 multiple statements on one line (colon)
+src/python/modules\pdf_report_generator.py:230:42: E701 multiple statements on one line (colon)
+src/python/modules\pdf_report_generator.py:231:1: W293 blank line contains whitespace
+src/python/modules\pdf_report_generator.py:233:80: E501 line too long (102 > 79 characters)
+src/python/modules\pdf_report_generator.py:234:80: E501 line too long (111 > 79 characters)
+src/python/modules\pdf_report_generator.py:235:80: E501 line too long (107 > 79 characters)
+src/python/modules\pdf_report_generator.py:236:80: E501 line too long (98 > 79 characters)
+src/python/modules\pdf_report_generator.py:237:80: E501 line too long (84 > 79 characters)
+src/python/modules\pdf_report_generator.py:239:62: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:239:69: E231 missing whitespace after ','
+src/python/modules\pdf_report_generator.py:239:80: E501 line too long (89 > 79 characters)
+src/python/modules\pdf_report_generator.py:243:22: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\pdf_report_generator.py:246:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:1:1: F401 'os' imported but unused
+src/python/modules\risk_engine.py:5:1: E302 expected 2 blank lines, found 1
+src/python/modules\risk_engine.py:5:80: E501 line too long (126 > 79 characters)
+src/python/modules\risk_engine.py:8:80: E501 line too long (82 > 79 characters)
+src/python/modules\risk_engine.py:10:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:15:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:19:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:20:80: E501 line too long (101 > 79 characters)
+src/python/modules\risk_engine.py:22:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:29:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:34:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:37:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:39:80: E501 line too long (90 > 79 characters)
+src/python/modules\risk_engine.py:40:80: E501 line too long (94 > 79 characters)
+src/python/modules\risk_engine.py:41:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:43:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:50:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:52:80: E501 line too long (84 > 79 characters)
+src/python/modules\risk_engine.py:58:50: E261 at least two spaces before inline comment
+src/python/modules\risk_engine.py:58:80: E501 line too long (89 > 79 characters)
+src/python/modules\risk_engine.py:61:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:62:5: F841 local variable 'turnover' is assigned to but never used
+src/python/modules\risk_engine.py:63:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:65:27: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:66:29: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:66:50: E261 at least two spaces before inline comment
+src/python/modules\risk_engine.py:66:80: E501 line too long (83 > 79 characters)
+src/python/modules\risk_engine.py:68:29: E261 at least two spaces before inline comment
+src/python/modules\risk_engine.py:69:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:71:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:77:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:79:23: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:79:44: E261 at least two spaces before inline comment
+src/python/modules\risk_engine.py:80:26: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:83:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:85:23: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:85:44: E261 at least two spaces before inline comment
+src/python/modules\risk_engine.py:86:25: E701 multiple statements on one line (colon)
+src/python/modules\risk_engine.py:89:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:91:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:93:80: E501 line too long (94 > 79 characters)
+src/python/modules\risk_engine.py:93:95: W291 trailing whitespace
+src/python/modules\risk_engine.py:94:80: E501 line too long (85 > 79 characters)
+src/python/modules\risk_engine.py:99:80: E501 line too long (93 > 79 characters)
+src/python/modules\risk_engine.py:103:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:110:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:115:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:120:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:122:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:124:80: E501 line too long (104 > 79 characters)
+src/python/modules\risk_engine.py:125:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:134:80: E501 line too long (97 > 79 characters)
+src/python/modules\risk_engine.py:135:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:140:80: E501 line too long (115 > 79 characters)
+src/python/modules\risk_engine.py:142:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:144:80: E501 line too long (94 > 79 characters)
+src/python/modules\risk_engine.py:146:80: E501 line too long (112 > 79 characters)
+src/python/modules\risk_engine.py:151:80: E501 line too long (81 > 79 characters)
+src/python/modules\risk_engine.py:153:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:156:80: E501 line too long (85 > 79 characters)
+src/python/modules\risk_engine.py:168:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:179:80: E501 line too long (247 > 79 characters)
+src/python/modules\risk_engine.py:181:80: E501 line too long (173 > 79 characters)
+src/python/modules\risk_engine.py:182:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:196:1: E302 expected 2 blank lines, found 1
+src/python/modules\risk_engine.py:206:5: E722 do not use bare 'except'
+src/python/modules\risk_engine.py:209:1: E302 expected 2 blank lines, found 1
+src/python/modules\risk_engine.py:210:80: E501 line too long (87 > 79 characters)
+src/python/modules\risk_engine.py:211:80: E501 line too long (188 > 79 characters)
+src/python/modules\risk_engine.py:223:5: E722 do not use bare 'except'
+src/python/modules\risk_engine.py:226:1: E302 expected 2 blank lines, found 1
+src/python/modules\risk_engine.py:226:80: E501 line too long (124 > 79 characters)
+src/python/modules\risk_engine.py:229:80: E501 line too long (150 > 79 characters)
+src/python/modules\risk_engine.py:232:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:233:80: E501 line too long (99 > 79 characters)
+src/python/modules\risk_engine.py:234:80: E501 line too long (90 > 79 characters)
+src/python/modules\risk_engine.py:235:80: E501 line too long (95 > 79 characters)
+src/python/modules\risk_engine.py:236:1: W293 blank line contains whitespace
+src/python/modules\risk_engine.py:237:80: E501 line too long (114 > 79 characters)
+src/python/modules\risk_engine.py:237:115: W291 trailing whitespace
+src/python/modules\risk_engine.py:239:35: W291 trailing whitespace
+src/python/modules\risk_engine.py:240:36: W291 trailing whitespace
+src/python/modules\risk_engine.py:243:80: E501 line too long (178 > 79 characters)
+src/python/modules\risk_engine.py:253:5: F841 local variable 'e' is assigned to but never used

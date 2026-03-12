@@ -1,4 +1,3 @@
-import os
 from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 
@@ -59,11 +58,12 @@ def compute_risk_score(financials, gst_bank_results, news_insights, officer_note
             if anomaly_months > 2:
                 capacity_score -= 10
     
-    turnover = _parse_val(entity_details.get("turnover"))
     
     if net_profit is not None:
-        if net_profit <= 0: capacity_score -= 10
-        elif net_profit < 10: capacity_score -= 5 # Arbitrary small threshold logic
+        if net_profit <= 0:
+            capacity_score -= 10
+        elif net_profit < 10:
+            capacity_score -= 5 # Arbitrary small threshold logic
     else:
         capacity_score -= 10 # Heavy penalty for lack of profit clarity
         
@@ -76,14 +76,18 @@ def compute_risk_score(financials, gst_bank_results, news_insights, officer_note
     npa_val = _parse_val(financials.get("Net NPA"))
     
     if car_val is not None:
-        if car_val < 9: capital_score -= 10 # Below Basel norm roughly
-        elif car_val < 12: capital_score -= 5
+        if car_val < 9:
+            capital_score -= 10 # Below Basel norm roughly
+        elif car_val < 12:
+            capital_score -= 5
     else:
         capital_score -= 5
         
     if npa_val is not None:
-        if npa_val > 5: capital_score -= 10 # High NPA
-        elif npa_val > 2: capital_score -= 5
+        if npa_val > 5:
+            capital_score -= 10 # High NPA
+        elif npa_val > 2:
+            capital_score -= 5
     else:
         capital_score -= 5
         
@@ -203,7 +207,7 @@ def _parse_val(val_str):
         if clean_str:
             return float(clean_str)
         return None
-    except:
+    except Exception:
         return None
 
 def __analyze_officer_notes(notes):
@@ -220,7 +224,7 @@ Based on these notes, output ONLY a single integer representing a risk score adj
         import re
         val = re.sub(r'[^\d-]', '', response.text)
         return int(val)
-    except:
+    except Exception:
         return 0
 
 def __generate_rationale(score, decision, limit, financials, gst_bank_results, news_insights, notes, requested_amount=None):
@@ -250,5 +254,5 @@ Make sure to explain WHY it was approved, reviewed, or rejected. If the requeste
             timeout_seconds=15
         )
         return response.text.strip()
-    except Exception as e:
+    except Exception:
         return f"{decision} based on score {score}."

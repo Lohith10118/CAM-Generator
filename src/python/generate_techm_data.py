@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd  # type: ignore
 from datetime import datetime, timedelta
 import random
 import os
@@ -33,12 +33,12 @@ def generate_gst_returns():
 
         gst_data.append([
             month, 
-            round(total_sales, 2), 
-            round(domestic_sales, 2), 
-            round(export_sales, 2),
-            round(igst, 2), 
-            round(cgst, 2), 
-            round(sgst, 2)
+            round(total_sales, 2),  # type: ignore
+            round(domestic_sales, 2),  # type: ignore
+            round(export_sales, 2),  # type: ignore
+            round(igst, 2),  # type: ignore
+            round(cgst, 2),  # type: ignore
+            round(sgst, 2)  # type: ignore
         ])
         
     df = pd.DataFrame(gst_data, columns=[
@@ -74,8 +74,8 @@ def generate_bank_statements():
             current_date.strftime("%Y-%m-%d"), 
             "NEFT/RTGS Client Payment - IT Services", 
             0.0, 
-            round(daily_inflow, 2), 
-            round(running_balance, 2)
+            round(daily_inflow, 2),  # type: ignore
+            round(running_balance, 2)  # type: ignore
         ])
         
         # 2. OUTFLOWS (Payroll, Server Costs, Operations)
@@ -85,9 +85,9 @@ def generate_bank_statements():
         bank_data.append([
             current_date.strftime("%Y-%m-%d"), 
             "RTGS/NEFT Vendor Payment / Payroll / Cloud Hosting", 
-            round(daily_outflow, 2), 
+            round(daily_outflow, 2),  # type: ignore
             0.0, 
-            round(running_balance, 2)
+            round(running_balance, 2)  # type: ignore
         ])
         
         current_date += timedelta(days=1)

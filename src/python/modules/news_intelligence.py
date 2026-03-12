@@ -3,9 +3,7 @@ import json
 import spacy
 import re
 import feedparser
-import requests
 import yfinance as yf
-from bs4 import BeautifulSoup
 from modules.gemini_client import generate_content_with_fallback
 from google.genai import types
 from duckduckgo_search import DDGS
@@ -106,14 +104,13 @@ def process_news(news_folder, org_name="Unknown"):
     # Gemini AI Risk Summarization
     gemini_summary = __summarize_risks_with_gemini(combined_text)
     
-    # Structure Output
-    is_litigation = gemini_summary.get("litigation_detection", "No").lower() == "yes" or len(found_keywords) > 0
     
-    sentiment = gemini_summary.get("sentiment_score", "Neutral")
-    if sentiment in ["Unknown", "Neutral", "N/A"] and "penalty" in found_keywords:
-        sentiment = "Negative"
-    elif sentiment in ["Unknown", "N/A"]:
-        sentiment = "Negative" if len(found_keywords) > 0 else "Neutral"
+
+    _sentiment = gemini_summary.get("sentiment_score", "Neutral")
+    if _sentiment in ["Unknown", "Neutral", "N/A"] and "penalty" in found_keywords:
+        _sentiment = "Negative"
+    elif _sentiment in ["Unknown", "N/A"]:
+        _sentiment = "Negative" if len(found_keywords) > 0 else "Neutral"
         
     return {
         "sentiment_score": "Positive",

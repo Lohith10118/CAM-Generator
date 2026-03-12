@@ -1,0 +1,17 @@
+src/python/app.py:121:13: F841 local variable 'e' is assigned to but never used
+src/python/modules\cam_generator.py:1:1: F401 'os' imported but unused
+src/python/modules\document_processor.py:9:1: F401 'pandas as pd' imported but unused
+src/python/modules\financial_extractor.py:1:1: F401 'os' imported but unused
+src/python/modules\gemini_client.py:4:1: F401 'google.genai.types' imported but unused
+src/python/modules\news_intelligence.py:108:5: F841 local variable '_is_litigation' is assigned to but never used
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_JUSTIFY' imported but unused
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_RIGHT' imported but unused
+src/python/modules\pdf_report_generator.py:5:1: F401 'reportlab.lib.enums.TA_CENTER' imported but unused
+src/python/modules\pdf_report_generator.py:6:1: F401 'reportlab.pdfgen.canvas' imported but unused
+src/python/modules\pdf_report_generator.py:16:17: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\pdf_report_generator.py:45:17: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\pdf_report_generator.py:111:5: F841 local variable 'e' is assigned to but never used
+src/python/modules\pdf_report_generator.py:229:41: E701 multiple statements on one line (colon)
+src/python/modules\pdf_report_generator.py:230:42: E701 multiple statements on one line (colon)
+src/python/modules\pdf_report_generator.py:243:22: F811 redefinition of unused 'canvas' from line 6
+src/python/modules\risk_engine.py:1:1: F401 'os' imported but unused

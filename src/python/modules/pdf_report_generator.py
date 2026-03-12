@@ -2,8 +2,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_RIGHT, TA_CENTER
-from reportlab.pdfgen import canvas
+from reportlab.lib.enums import TA_LEFT
 from datetime import datetime
 import json
 
@@ -108,7 +107,7 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     try:
         cam_text_safe = cam_text.replace("₹", "Rs. ")
         report_data = json.loads(cam_text_safe)
-    except Exception as e:
+    except Exception:
         report_data = {"applicant_name": borrower_name}
         
     app_name = report_data.get("applicant_name", borrower_name)
@@ -226,8 +225,10 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     # Color-code the decision
     decision_val = str(rec.get("decision", "Review"))
     dec_color = colors.orange
-    if "approve" in decision_val.lower(): dec_color = colors.green
-    elif "reject" in decision_val.lower(): dec_color = colors.red
+    if "approve" in decision_val.lower():
+        dec_color = colors.green
+    elif "reject" in decision_val.lower():
+        dec_color = colors.red
     
     t6_data = [
         [get_paragraph("<b>Decision</b>"), get_paragraph(decision_val, textColor=dec_color, size=12)],

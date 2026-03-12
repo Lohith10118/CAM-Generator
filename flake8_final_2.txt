@@ -1,0 +1,3 @@
+src/python/app.py:121:13: F841 local variable 'e' is assigned to but never used
+src/python/modules\financial_extractor.py:1:1: F401 'os' imported but unused
+src/python/modules\news_intelligence.py:108:5: F841 local variable '_is_litigation' is assigned to but never used

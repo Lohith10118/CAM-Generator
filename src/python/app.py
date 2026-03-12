@@ -1,24 +1,28 @@
 import os
 import shutil
-from flask import Flask, render_template, request, redirect, flash, send_file, url_for
-from werkzeug.utils import secure_filename
-from dotenv import load_dotenv, find_dotenv
+import uuid
+import threading
+import json
+import zipfile
+import traceback
+import concurrent.futures
+
+from flask import Flask, render_template, request, redirect, flash, send_file, url_for, jsonify  # type: ignore
+from werkzeug.utils import secure_filename  # type: ignore
+from dotenv import load_dotenv, find_dotenv  # type: ignore
 
 # Load environment variables from .env file (looks in parent directories too)
 load_dotenv(find_dotenv())
 
 # Import from the newly structured modules
-from modules.document_processor import process_pdf
-from modules.financial_extractor import extract_financials
-from modules.gst_bank_analysis import analyze_gst_bank
-from modules.news_intelligence import process_news
-from modules.risk_engine import compute_risk_score
-from modules.cam_generator import generate_cam
-from modules.pdf_report_generator import create_cam_pdf
-import concurrent.futures
-from modules.risk_engine import compute_risk_score
-from modules.cam_generator import generate_cam
-from modules.pdf_report_generator import create_cam_pdf
+from modules.document_processor import process_pdf, extract_financial_tables  # type: ignore
+from modules.financial_extractor import extract_financials  # type: ignore
+from modules.gst_bank_analysis import analyze_gst_bank  # type: ignore
+from modules.news_intelligence import process_news  # type: ignore
+from modules.risk_engine import compute_risk_score  # type: ignore
+from modules.cam_generator import generate_cam  # type: ignore
+from modules.pdf_report_generator import create_cam_pdf  # type: ignore
+from modules.document_classifier import classify_documents  # type: ignore
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -34,11 +38,7 @@ os.makedirs(app.config['NEWS_FOLDER'], exist_ok=True)
 def dashboard():
     return render_template("upload.html")
 
-from modules.document_classifier import classify_documents
-
 # --- Background Task Storage ---
-import uuid
-import threading
 
 # Store background tasks: {task_id: {"status": "processing"|"success"|"error", "result": {...}, "message": "..."}}
 background_tasks = {}
@@ -87,7 +87,6 @@ def background_process_documents(task_id, saved_doc_paths, entity_details, loan_
         
         background_tasks[task_id]['message'] = "AI extracting financial metrics from text..."
         print(f"[{task_id}] [3/3] Extracting Financials & applying Dynamic Schema from AI...")
-        from modules.document_processor import extract_financial_tables
         financial_tables = extract_financial_tables(annual_report_path)
         
         financials = extract_financials(extracted_text, tables_data=financial_tables, dynamic_schema=dynamic_schema)
@@ -105,7 +104,6 @@ def background_process_documents(task_id, saved_doc_paths, entity_details, loan_
         }
         
     except Exception as e:
-        import traceback
         traceback.print_exc()
         background_tasks[task_id]['status'] = 'error'
         background_tasks[task_id]['message'] = f"Error during document processing: {str(e)}"
@@ -121,7 +119,7 @@ def process_documents():
                     os.unlink(file_path)
                 elif os.path.isdir(file_path) and file_path != app.config['NEWS_FOLDER']:
                     shutil.rmtree(file_path)
-            except Exception as e:
+            except Exception:
                 pass
 
     unclassified_docs = request.files.getlist('unclassified_docs')
@@ -158,7 +156,6 @@ def process_documents():
             
             if filename.lower().endswith('.zip'):
                 print(f"Extracting ZIP archive: {filename}")
-                import zipfile
                 try:
                     with zipfile.ZipFile(path, 'r') as zip_ref:
                         zip_ref.extractall(app.config['UPLOAD_FOLDER'])
@@ -198,8 +195,6 @@ def process_documents():
     
     return render_template("processing.html", task_id=task_id)
 
-from flask import jsonify
-
 @app.route("/status/<task_id>", methods=['GET'])
 def get_task_status(task_id):
     task = background_tasks.get(task_id)
@@ -207,7 +202,6 @@ def get_task_status(task_id):
         return jsonify({"status": "error", "message": "Task not found."}), 404
     return jsonify(task)
 
-import json
 @app.route("/review_staged", methods=['POST'])
 def review_staged():
     """
@@ -245,8 +239,8 @@ def review_staged():
             loan_details=loan_details,
             officer_notes=officer_notes
         )
-    except Exception as e:
-        flash(f"Error loading review screen: {str(e)}")
+    except Exception:
+        flash(f"Error loading review screen.")
         return redirect(url_for('dashboard'))
 
 
@@ -290,14 +284,14 @@ def analyze_confirmed():
                 elif category == "Bank Statements":
                     bank_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-        if not gst_path or not os.path.exists(gst_path) or not bank_path or not os.path.exists(bank_path):
+        if not gst_path or not bank_path or not os.path.exists(str(gst_path)) or not os.path.exists(str(bank_path)):
             flash("Error: You must assign at least one document as 'GST Returns' and one as 'Bank Statements' in the review screen.")
             return redirect(url_for('dashboard'))
 
         try:
              with open(os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_text_cache.json'), 'r', encoding='utf-8') as f:
                  extracted_text = f.read()
-        except:
+        except Exception:
              extracted_text = ""
 
         # 4 & 5. Analyze GST/Bank mismatch and News Intelligence Concurrently
@@ -350,7 +344,6 @@ def analyze_confirmed():
         )
         
     except Exception as e:
-        import traceback
         traceback.print_exc()
         flash(f"Error during final processing: {str(e)}")
         return redirect(url_for('dashboard'))
