@@ -1,432 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliCredit AI - Upload</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 2 7 12 12 22 7 12 2%22></polygon><polyline points=%222 12 12 17 22 12%22></polyline><polyline points=%222 17 12 22 22 17%22></polyline></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        .upload-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Entity Onboarding | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+:root {
+  --bg: #0f172a;
+  --bg-gradient: radial-gradient(circle at top left, #1e3a8a 0%, #0f172a 100%);
+  --surface: rgba(30, 41, 59, 0.7);
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --primary: #3b82f6;
+  --primary-glow: rgba(59, 130, 246, 0.4);
+  --green: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.4);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --input-bg: rgba(15, 23, 42, 0.5);
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand { font-size: 1.1rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+.brand i { color: var(--primary); font-size: 1.2rem; filter: drop-shadow(0 0 8px var(--primary-glow)); }
+.brand-dot { color: var(--green); }
+.back-link { font-size: 0.85rem; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+.back-link:hover { color: #fff; }
+.wrap { max-width: 850px; margin: 3rem auto; padding: 0 1.5rem; width: 100%; }
 
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            position: relative;
-        }
+/* Step bar */
+.step-bar { display: flex; align-items: center; margin-bottom: 2.5rem; background: var(--surface); backdrop-filter: blur(16px); padding: 1rem 2rem; border-radius: 16px; border: 1px solid var(--surface-border); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+.sb-item { display: flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; font-weight: 500; color: var(--muted); transition: all 0.4s; }
+.sb-item.active { color: #fff; font-weight: 600; }
+.sb-item.done { color: var(--green); font-weight: 600; }
+.sb-num { width: 30px; height: 30px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; transition: all 0.4s; }
+.sb-item.active .sb-num { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary-glow); }
+.sb-item.done .sb-num { background: var(--green); border-color: var(--green); color: #fff; box-shadow: 0 0 15px var(--green-glow); }
+.sb-line { flex: 1; height: 2px; background: rgba(255, 255, 255, 0.1); margin: 0 1rem; border-radius: 2px; transition: background 0.4s; }
+.sb-line.done { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
 
-        .step-indicator::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: #e2e8f0;
-            z-index: 1;
-            transform: translateY(-50%);
-        }
+/* Form card (Glassmorphism) */
+.form-card {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+.form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--green)); opacity: 0; transition: opacity 0.4s; }
+.form-card:hover::before { opacity: 1; }
+.card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
 
-        .step {
-            position: relative;
-            z-index: 2;
-            background-color: white;
-            padding: 0 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #64748b;
-            font-weight: 500;
-        }
+label { font-size: 0.82rem; font-weight: 500; color: var(--muted); display: block; margin-bottom: 0.4rem; letter-spacing: 0.3px; }
+input, select, textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--surface-border);
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+input::placeholder, textarea::placeholder { color: rgba(148, 163, 184, 0.5); }
+input:focus, select:focus, textarea:focus { border-color: var(--primary); background: rgba(15, 23, 42, 0.8); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); transform: translateY(-1px); }
+select option { background: var(--bg); color: #fff; }
 
-        .step.active {
-            color: #4F46E5;
-        }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+.form-row-1 { margin-bottom: 1.5rem; }
 
-        .step.completed {
-            color: #10b981;
-        }
+/* Buttons */
+.btn-next, .btn-create, .btn-back {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.75rem 1.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-next { background: var(--primary); color: #fff; border: none; box-shadow: 0 4px 15px var(--primary-glow); }
+.btn-next:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5); }
+.btn-back { background: transparent; border: 1px solid var(--muted); color: var(--muted); }
+.btn-back:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+.btn-create { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; border: none; box-shadow: 0 4px 15px var(--green-glow); }
+.btn-create:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
+.btn-row { display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--surface-border); }
 
-        .step-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            border: 2px solid #cbd5e1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
+/* Step Sections */
+.step-container { position: relative; overflow: hidden; min-height: 380px; }
+.step-section {
+  position: absolute;
+  top: 0; left: 0; width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(30px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.step-section.active { opacity: 1; visibility: visible; transform: translateX(0); position: relative; }
+.step-section.prev-exit { transform: translateX(-30px); }
 
-        .step.active .step-circle {
-            background-color: #eff6ff;
-            border-color: #4F46E5;
-            color: #4F46E5;
-        }
+/* File upload */
+.file-upload-wrapper {
+  position: relative;
+  background: var(--input-bg);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.file-upload-wrapper:hover { border-color: var(--primary); background: rgba(59, 130, 246, 0.05); }
+.file-upload-wrapper input[type="file"] { position: relative; z-index: 2; width: 100%; color: var(--muted); }
+.file-upload-wrapper input[type="file"]::file-selector-button { background: var(--surface); color: #fff; border: 1px solid var(--surface-border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-right: 1rem; transition: background 0.2s; }
+.file-upload-wrapper input[type="file"]::file-selector-button:hover { background: rgba(255,255,255,0.1); }
+.file-help { font-size: 0.75rem; color: var(--muted); display: block; margin-top: 6px; }
 
-        .step.completed .step-circle {
-            background-color: #ecfdf5;
-            border-color: #10b981;
-            color: #10b981;
-        }
-
-        .form-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .form-section.active {
-            display: block;
-        }
-
-        .two-col-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-        }
-    </style>
+@media(max-width: 768px) {
+  .form-row { grid-template-columns: 1fr; gap: 1rem; }
+  .wrap { margin: 1.5rem auto; }
+  .step-bar { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .sb-line { display: none; }
+}
+</style>
 </head>
-
 <body>
-    <div class="app-container">
+<div class="topbar">
+  <div class="brand"><i class="bi bi-cpu-fill me-1"></i>Intelli<span class="brand-dot">·</span>Credit AI</div>
+  <a href="/" class="back-link"><i class="bi bi-person-circle me-1"></i>Corporate Lending Agent</a>
+</div>
+<div class="wrap">
+  <div class="page-hd" style="margin-bottom: 2.5rem; text-align: center;">
+    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Entity Onboarding & Intelligence</h1>
+    <p style="color: var(--muted); font-size: 1rem;">Register the corporate entity, specify loan criteria, and upload documents for AI-driven appraisal.</p>
+  </div>
 
-        <header class="navbar">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-                <span>IntelliCredit AI</span>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for msg in messages %}
+  <div class="flash-warn"><i class="bi bi-info-circle"></i>{{ msg }}</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <div class="step-bar" id="stepBar">
+    <div class="sb-item active" id="sb1"><div class="sb-num">1</div>Company Details</div>
+    <div class="sb-line" id="sl1"></div>
+    <div class="sb-item" id="sb2"><div class="sb-num">2</div>Loan Request</div>
+    <div class="sb-line" id="sl2"></div>
+    <div class="sb-item" id="sb3"><div class="sb-num">3</div>Documents</div>
+  </div>
+
+  <div class="form-card">
+    <form id="obForm" action="/process_documents" method="POST" enctype="multipart/form-data">
+
+      <div class="step-container">
+        <!-- STEP 1 -->
+        <div class="step-section active" id="step1">
+          <div class="card-title"><i class="bi bi-building"></i> Company Details</div>
+          <div class="form-row">
+            <div><label>Company Name *</label><input type="text" name="entity_name" required placeholder="e.g. Reliance Industries"></div>
+            <div><label>CIN *</label><input type="text" name="entity_cin" required placeholder="L12345MH2000PLC123456"></div>
+          </div>
+          <div class="form-row">
+            <div><label>PAN *</label><input type="text" name="entity_pan" required placeholder="ABCDE1234F"></div>
+            <div><label>Annual Turnover (₹ Crore) *</label><input type="number" step="0.01" name="entity_turnover" required placeholder="e.g. 15000"></div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label>Primary Sector *</label>
+              <select name="entity_sector" required>
+                <option value="">— Select Sector —</option>
+                <option>Manufacturing</option>
+                <option>IT Services</option>
+                <option>Retail</option>
+                <option>Healthcare</option>
+                <option>Real Estate</option>
+                <option>Other</option>
+              </select>
             </div>
-            <div class="user-profile">Corporate Lending Agent</div>
-        </header>
+          </div>
+          <div class="btn-row"><span></span><button type="button" class="btn-next" onclick="go(2)">Next <i class="bi bi-arrow-right"></i></button></div>
+        </div>
 
-        <main class="main-content">
-            <div class="header-section" style="text-align: center;">
-                <h1>Entity Onboarding & Intelligence</h1>
-                <p>Register the corporate entity, specify loan criteria, and upload documents for AI-driven appraisal.
-                </p>
+        <!-- STEP 2 -->
+        <div class="step-section" id="step2">
+          <div class="card-title"><i class="bi bi-bank"></i> Loan / Facility Request</div>
+          <div class="form-row">
+            <div>
+              <label>Loan Type *</label>
+              <select name="loan_type" required>
+                <option value="">— Select Facility —</option>
+                <option>Term Loan</option>
+                <option>Working Capital (CC/OD)</option>
+                <option>Letter of Credit</option>
+                <option>Bank Guarantee</option>
+                <option>Other</option>
+              </select>
             </div>
+            <div><label>Loan Amount (₹ Crore) *</label><input type="number" step="0.01" name="loan_amount" required placeholder="e.g. 50"></div>
+          </div>
+          <div class="form-row">
+            <div><label>Tenure (months) *</label><input type="number" name="loan_tenure" required placeholder="e.g. 60"></div>
+            <div><label>Proposed Interest Rate (%)</label><input type="number" step="0.01" name="loan_interest" placeholder="e.g. 9.5"></div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-back" onclick="go(1)"><i class="bi bi-arrow-left"></i> Back</button>
+            <button type="button" class="btn-next" onclick="go(3)">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
 
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="flash-messages" style="max-width: 800px; margin: 0 auto 24px;">
-                {% for message in messages %}
-                <div class="flash-alert">{{ message }}</div>
-                {% endfor %}
+        <!-- STEP 3 -->
+        <div class="step-section" id="step3">
+          <div class="card-title"><i class="bi bi-cloud-arrow-up"></i> Document Ingestion</div>
+          <div class="form-row-1">
+            <label>Financial Documents (Bulk Upload) *</label>
+            <div class="file-upload-wrapper">
+              <input type="file" name="unclassified_docs" accept=".pdf,.csv,.xlsx,.zip" multiple required>
             </div>
-            {% endif %}
-            {% endwith %}
+            <span class="file-help">Upload Annual Reports (PDF), GST Returns, Bank Statements etc. AI will auto-classify them.</span>
+          </div>
+          
+          <div class="form-row-1">
+            <label>Dynamic Schema Extraction (Optional)</label>
+            <textarea name="dynamic_schema" rows="2" placeholder="e.g. EBITDA Margin, Total Debt..."></textarea>
+            <span class="file-help">Define custom financial metrics (comma-separated) for the AI to extract flexibly.</span>
+          </div>
 
-            <div class="upload-container">
-                <div class="card glass-card">
-
-                    <div class="step-indicator">
-                        <div class="step active" id="indicator-step-1">
-                            <div class="step-circle">1</div>
-                            <span>Entity Details</span>
-                        </div>
-                        <div class="step" id="indicator-step-2">
-                            <div class="step-circle">2</div>
-                            <span>Loan Request</span>
-                        </div>
-                        <div class="step" id="indicator-step-3">
-                            <div class="step-circle">3</div>
-                            <span>Documents</span>
-                        </div>
-                    </div>
-
-                    <form action="/analyze" method="POST" enctype="multipart/form-data" class="upload-form"
-                        id="onboarding-form">
-
-                        <!-- STEP 1: Entity Details -->
-                        <div class="form-section active" id="section-step-1">
-                            <h2>1. Basic Entity Information</h2>
-                            <p class="help-text" style="margin-bottom: 20px;">Provide preliminary information about the
-                                corporate entity applying for credit.</p>
-
-                            <div class="two-col-grid">
-                                <div class="form-group" style="grid-column: 1 / -1;">
-                                    <label for="entity_name">Organization / Entity Name<span class="required">*</span></label>
-                                    <input type="text" id="entity_name" name="entity_name" class="text-input"
-                                        placeholder="e.g. Reliance Industries Limited" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                                <div class="form-group">
-                                    <label for="entity_cin">Corporate Identity Number (CIN)<span
-                                            class="required">*</span></label>
-                                    <input type="text" id="entity_cin" name="entity_cin" class="text-input"
-                                        placeholder="e.g. U72900MH2000PLC123456" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                                <div class="form-group">
-                                    <label for="entity_pan">Permanent Account Number (PAN)<span
-                                            class="required">*</span></label>
-                                    <input type="text" id="entity_pan" name="entity_pan" class="text-input"
-                                        placeholder="e.g. ABCDE1234F" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; text-transform: uppercase;">
-                                </div>
-                                <div class="form-group">
-                                    <label for="entity_sector">Primary Sector / Industry<span
-                                            class="required">*</span></label>
-                                    <select id="entity_sector" name="entity_sector" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: white;">
-                                        <option value="">Select Sector...</option>
-                                        <option value="Manufacturing">Manufacturing</option>
-                                        <option value="IT Services">IT & Software Services</option>
-                                        <option value="Retail">Retail & FMCG</option>
-                                        <option value="Healthcare">Healthcare & Pharmaceutics</option>
-                                        <option value="Real Estate">Real Estate & Construction</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="entity_turnover">Annual Turnover (Self-Declared in Cr.)<span
-                                            class="required">*</span></label>
-                                    <input type="number" step="0.01" id="entity_turnover" name="entity_turnover"
-                                        class="text-input" placeholder="e.g. 50.5" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                            </div>
-
-                            <div class="form-actions" style="justify-content: flex-end;">
-                                <button type="button" class="btn btn-primary" onclick="nextStep(2)">
-                                    <span>Continue to Loan Details</span>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 2: Loan Requirements -->
-                        <div class="form-section" id="section-step-2">
-                            <h2>2. Specific Loan Request</h2>
-                            <p class="help-text" style="margin-bottom: 20px;">Define the parameters of the credit
-                                facility being appraised.</p>
-
-                            <div class="two-col-grid">
-                                <div class="form-group">
-                                    <label for="loan_type">Facility / Loan Type<span class="required">*</span></label>
-                                    <select id="loan_type" name="loan_type" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: white;">
-                                        <option value="">Select Facility...</option>
-                                        <option value="Term Loan">Term Loan</option>
-                                        <option value="Working Capital (CC/OD)">Working Capital (CC/OD)</option>
-                                        <option value="Letter of Credit">Letter of Credit (LC)</option>
-                                        <option value="Bank Guarantee">Bank Guarantee (BG)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="loan_amount">Requested Amount (in Cr.)<span
-                                            class="required">*</span></label>
-                                    <input type="number" step="0.01" id="loan_amount" name="loan_amount"
-                                        class="text-input" placeholder="e.g. 15.0" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                                <div class="form-group">
-                                    <label for="loan_tenure">Proposed Tenure (Months)<span
-                                            class="required">*</span></label>
-                                    <input type="number" id="loan_tenure" name="loan_tenure" class="text-input"
-                                        placeholder="e.g. 60" required
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                                <div class="form-group">
-                                    <label for="loan_interest">Expected Interest Rate (%) <span
-                                            class="optional">(Optional)</span></label>
-                                    <input type="number" step="0.01" id="loan_interest" name="loan_interest"
-                                        class="text-input" placeholder="e.g. 9.5"
-                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-secondary" onclick="prevStep(1)"
-                                    style="background-color: white; border: 1px solid #cbd5e1; color: #475569;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        style="margin-right: 8px;">
-                                        <polyline points="15 18 9 12 15 6"></polyline>
-                                    </svg>
-                                    Back
-                                </button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">
-                                    <span>Continue to Docs Upload</span>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- STEP 3: Document Uploads -->
-                        <div class="form-section" id="section-step-3">
-                            <h2>3. Document Ingestion</h2>
-                            <p class="help-text" style="margin-bottom: 20px;">Upload the required financial documents to
-                                trigger AI classification, extraction, and validation.</p>
-
-                            <div class="form-group">
-                                <label for="unclassified_docs">Unclassified Documents (Bulk Upload)<span class="required">*</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="unclassified_docs" name="unclassified_docs" accept=".pdf,.csv,.xlsx" multiple required>
-                                </div>
-                                <span class="help-text">Upload all documents (Annual Report, GST Returns, Bank Statements, ALM, Shareholding, Borrowing Profile, Portfolio Cuts). AI will auto-classify them.</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="dynamic_schema">Dynamic Schema Extraction <span class="optional">(Optional)</span></label>
-                                <textarea id="dynamic_schema" name="dynamic_schema" rows="2"
-                                    placeholder="e.g. EBITDA Margin, Total Debt, Operating Cash Flow"
-                                    style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
-                                <span class="help-text">Define custom financial metrics (comma-separated) for the AI to extract.</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="news_files">External News/Intel (Text Files) <span
-                                        class="optional">(Optional)</span></label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="news_files" name="news_files" accept=".txt" multiple>
-                                </div>
-                                <span class="help-text">Upload raw .txt news articles for sentiment analysis.</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="officer_notes">Credit Officer Notes <span class="optional">(Optional)</span></label>
-                                <textarea id="officer_notes" name="officer_notes" rows="3"
-                                    placeholder="e.g. Factory running at low capacity, recent management changes..."
-                                    style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical; margin-top: 5px;"></textarea>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-secondary" onclick="prevStep(2)"
-                                    style="background-color: white; border: 1px solid #cbd5e1; color: #475569;">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        style="margin-right: 8px;">
-                                        <polyline points="15 18 9 12 15 6"></polyline>
-                                    </svg>
-                                    Back
-                                </button>
-                                <button type="button" class="btn btn-primary" style="background-color: #4F46E5;"
-                                    onclick="if(validateStep(3)) { submitForClassification(this); }">
-                                    <span>Classify & Extract Data</span>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <polyline points="19 12 12 19 5 12"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
+          <div class="form-row-1">
+            <label>External News/OSINT (Optional)</label>
+            <div class="file-upload-wrapper" style="padding: 1rem;">
+              <input type="file" name="news_files" accept=".txt" multiple>
             </div>
-        </main>
-    </div>
+          </div>
 
-    <script>
-        function submitForClassification(btn) {
-            btn.innerHTML = '<span>Uploading & Extracting...</span>';
-            const form = document.getElementById('onboarding-form');
-            form.action = '/process_documents';
-            form.submit();
-            btn.disabled = true;
-        }
-        function validateStep(step) {
-            const section = document.getElementById(`section-step-${step}`);
-            const inputs = section.querySelectorAll('input[required], select[required]');
-            let isValid = true;
+          <div class="form-row-1">
+            <label>Credit Officer Notes (Optional)</label>
+            <textarea name="officer_notes" rows="2" placeholder="e.g. Factory running at low capacity..."></textarea>
+          </div>
 
-            inputs.forEach(input => {
-                if (!input.value) {
-                    input.style.borderColor = '#ef4444';
-                    isValid = false;
-                } else {
-                    input.style.borderColor = '#e2e8f0';
-                }
-            });
+          <div class="btn-row">
+            <button type="button" class="btn-back" onclick="go(2)"><i class="bi bi-arrow-left"></i> Back</button>
+            <button type="button" class="btn-create" id="createBtn" onclick="submitForm()">
+              <i class="bi bi-cpu"></i> Classify &amp; Extract
+            </button>
+          </div>
+        </div>
+      </div>
 
-            return isValid;
-        }
+    </form>
+  </div>
+</div>
+<script>
+function validateStep(step) {
+  const section = document.getElementById('step' + step);
+  const inputs = section.querySelectorAll('input[required], select[required]');
+  let isValid = true;
+  inputs.forEach(input => {
+    if (!input.value) {
+      input.style.borderColor = '#DC2626';
+      isValid = false;
+    } else {
+      input.style.borderColor = '#E2E8F0';
+    }
+  });
+  return isValid;
+}
 
-        function nextStep(step) {
-            if (!validateStep(step - 1)) {
-                return; // Don't proceed if current step is invalid
-            }
+function go(n){
+  if(n === 2 && !validateStep(1)) return;
+  if(n === 3 && !validateStep(2)) return;
 
-            // Hide all sections
-            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-            // Remove active class from all indicators
-            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+  const currentActive = document.querySelector('.step-section.active');
+  const targetId = 'step' + n;
+  
+  // Update step visual indicators
+  [1,2,3].forEach(i=>{
+    const sb=document.getElementById('sb'+i);
+    if(i<n){
+       sb.className='sb-item done';
+       sb.querySelector('.sb-num').innerHTML='<i class="bi bi-check-lg" style="font-size:1rem"></i>';
+    } else if(i===n) {
+       sb.className='sb-item active';
+       sb.querySelector('.sb-num').textContent=i;
+    } else {
+       sb.className='sb-item';
+       sb.querySelector('.sb-num').textContent=i;
+    }
+    if(i<3){document.getElementById('sl'+i).className=i<n?'sb-line done':'sb-line';}
+  });
 
-            // Show target section
-            document.getElementById(`section-step-${step}`).classList.add('active');
+  // Smooth slide transition
+  if(currentActive && currentActive.id !== targetId) {
+    currentActive.classList.remove('active');
+    currentActive.classList.add('prev-exit');
+    setTimeout(() => {
+      currentActive.classList.remove('prev-exit');
+    }, 500); // match transition time
+  }
+  
+  const target = document.getElementById(targetId);
+  target.classList.add('active');
+}
 
-            // Update indicators (mark previous as completed, current as active)
-            for (let i = 1; i < step; i++) {
-                document.getElementById(`indicator-step-${i}`).classList.remove('active');
-                document.getElementById(`indicator-step-${i}`).classList.add('completed');
-            }
-            document.getElementById(`indicator-step-${step}`).classList.remove('completed');
-            document.getElementById(`indicator-step-${step}`).classList.add('active');
-        }
-
-        function prevStep(step) {
-            // Hide all sections
-            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
-            // Remove active class from all indicators
-            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-
-            // Show target section
-            document.getElementById(`section-step-${step}`).classList.add('active');
-
-            // Update indicators (revert next steps)
-            for (let i = step + 1; i <= 3; i++) {
-                document.getElementById(`indicator-step-${i}`).classList.remove('completed');
-                document.getElementById(`indicator-step-${i}`).classList.remove('active');
-            }
-            document.getElementById(`indicator-step-${step}`).classList.remove('completed');
-            document.getElementById(`indicator-step-${step}`).classList.add('active');
-        }
-    </script>
+function submitForm() {
+  if(!validateStep(3)) return;
+  const b = document.getElementById('createBtn');
+  b.disabled = true;
+  b.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Uploading...';
+  document.getElementById('obForm').submit();
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

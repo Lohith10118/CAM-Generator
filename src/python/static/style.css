@@ -1,15 +1,15 @@
 :root {
-    --bg-color: #f3f4f6; /* Light gray background */
-    --card-bg: #ffffff; /* Solid white cards */
-    --card-border: #e5e7eb; /* Subtle borders */
-    --text-primary: #111827; /* Dark gray/black text */
-    --text-secondary: #4b5563; /* Medium gray text */
-    --primary: #2563eb; /* Professional blue */
-    --primary-hover: #1d4ed8;
-    --success: #059669; /* Banking green */
-    --warning: #d97706;
-    --danger: #dc2626;
-    --sidebar-bg: #1e293b; /* Dark sidebar for contrast */
+    --bg-color: #F8FAFC;
+    --card-bg: #ffffff;
+    --card-border: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --primary: #1E40AF;
+    --primary-hover: #1e3a8a;
+    --success: #059669;
+    --warning: #D97706;
+    --danger: #e11d48;
+    --sidebar-bg: #1e293b;
 }
 
 * {
@@ -175,6 +175,24 @@ label {
 .file-input-wrapper:hover {
     border-color: var(--primary);
     background: #f0fdf4;
+}
+
+input[type="text"], input[type="number"], select, textarea {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    font-size: 0.84rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.08);
 }
 
 input[type="file"] {

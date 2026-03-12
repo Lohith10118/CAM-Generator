@@ -1,299 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliCredit AI - Results</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polygon points=%2212 2 2 7 12 12 22 7 12 2%22></polygon><polyline points=%222 12 12 17 22 12%22></polyline><polyline points=%222 17 12 22 22 17%22></polyline></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .results-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{{ organization_name }} — Credit Report | Intelli-Credit AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f8fafc;
+  --bg-gradient: #f8fafc;
+  --surface: #ffffff;
+  --surface-border: #e2e8f0;
+  --primary: #1e40af;
+  --primary-glow: rgba(30, 64, 175, 0.15);
+  --green: #059669;
+  --green-glow: rgba(5, 150, 105, 0.15);
+  --amber: #d97706;
+  --amber-glow: rgba(217, 119, 6, 0.15);
+  --red: #e11d48;
+  --red-glow: rgba(225, 29, 72, 0.15);
+  --text: #0f172a;
+  --text2: #334155;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Topbar */
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 200; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.brand { font-size: 1.1rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+.brand i { color: var(--green); font-size: 1.2rem; }
+.brand sup { font-size: 0.7rem; color: var(--muted); margin-left: 0.5rem; font-weight: 500; }
+.top-right { display: flex; align-items: center; gap: 1rem; }
+
+.btn-dl { font-size: 0.8rem; padding: 0.5rem 1.2rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; border: 1px solid; transition: all 0.3s; }
+.btn-pdf { border-color: rgba(225, 29, 72, 0.3); color: var(--red); background: rgba(225, 29, 72, 0.05); }
+.btn-pdf:hover { background: rgba(225, 29, 72, 0.1); border-color: var(--red); color: var(--red); transform: translateY(-1px); }
+.btn-new { background: var(--primary); color: #fff; border: none; font-size: 0.8rem; padding: 0.5rem 1.2rem; border-radius: 8px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 4px var(--primary-glow); transition: all 0.3s; }
+.btn-new:hover { transform: translateY(-1px); box-shadow: 0 4px 6px rgba(30, 64, 175, 0.2); }
+
+.main { max-width: 1440px; margin: 0 auto; padding: 2rem; }
+
+/* Dashboard Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px; padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative; overflow: hidden;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+.card-tl::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: var(--primary); }
+.card-tg::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: var(--green); }
+.card-ta::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: var(--amber); }
+.card-tr::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: var(--red); }
+
+.section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+.card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; color: var(--text); }
+
+/* Entity Header */
+.entity-hd { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.5rem 0 2rem; }
+.entity-name { font-size: 2.2rem; font-weight: 800; line-height: 1.2; color: var(--text); }
+.entity-meta { font-size: 0.85rem; color: var(--muted); margin-top: 0.8rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+.entity-meta span { background: #f1f5f9; padding: 0.3rem 0.8rem; border-radius: 6px; border: 1px solid var(--surface-border); color: var(--text2); }
+
+/* Badges */
+.badge-approve { background: #d1fae5; color: #047857; border: 1px solid #10b981; border-radius: 8px; padding: 8px 20px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; }
+.badge-review { background: #fef3c7; color: #b45309; border: 1px solid #f59e0b; border-radius: 8px; padding: 8px 20px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; }
+.badge-reject { background: #fee2e2; color: #b91c1c; border: 1px solid #ef4444; border-radius: 8px; padding: 8px 20px; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; }
+
+/* Pipeline Mini */
+.pipe { display: flex; align-items: center; overflow-x: auto; padding: 0.8rem 0; }
+.pi { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 70px; }
+.pdot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--green); background: #d1fae5; color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.plbl { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--green); margin-top: 6px; text-align: center; }
+.pconn { flex: 1; height: 2px; background: var(--green); margin-bottom: 20px; opacity: 0.5; }
+
+/* KPIs */
+.kpi-big { font-size: 2.5rem; font-weight: 800; line-height: 1; margin-bottom: 0.3rem; }
+.kpi-sub { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+
+/* 5 C's */
+.cbar { margin-bottom: 1.2rem; }
+.crow { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text); }
+.ctrack { height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.cfill { height: 100%; border-radius: 999px; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Ratios */
+.rrow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--surface-border); }
+.rlbl { font-size: 0.85rem; color: var(--muted); }
+.rval { font-size: 0.95rem; font-weight: 600; color: var(--text); text-align: right; }
+
+/* Narrative */
+.narrative-box { background: #f8fafc; border: 1px solid var(--surface-border); border-radius: 12px; padding: 1.5rem; font-size: 0.95rem; line-height: 1.8; color: var(--text2); }
+
+/* Download footer */
+.dl-footer { display: flex; justify-content: center; padding: 3rem 0; margin-top: 1rem; border-top: 1px solid var(--surface-border); }
+.btn-dl-big { padding: 0.8rem 2.5rem; border-radius: 12px; font-weight: 700; font-size: 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.6rem; border: 1px solid rgba(225, 29, 72, 0.3); color: var(--red); background: rgba(225, 29, 72, 0.05); transition: all 0.3s; }
+.btn-dl-big:hover { background: rgba(225, 29, 72, 0.1); border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+
+@media(max-width:768px){ .entity-name{font-size:1.5rem;} .entity-meta span{font-size:0.75rem;padding:0.2rem 0.5rem;} }
+</style>
 </head>
-
 <body>
-    <div class="app-container">
 
-        <header class="navbar">
-            <div class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 17L12 22L22 17" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 12L12 17L22 12" stroke="#4F46E5" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-                <span>IntelliCredit AI</span>
-            </div>
-            <div class="user-profile">Corporate Lending Agent</div>
-        </header>
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand"><i class="bi bi-cpu-fill me-1" style="color:var(--green)"></i>Intelli·Credit AI <sup>| {{ organization_name }}</sup></div>
+  <div class="top-right">
+    <a href="{{ url_for('download_cam') }}" class="btn-dl btn-pdf"><i class="bi bi-file-earmark-pdf"></i>CAM PDF</a>
+    <a href="{{ url_for('dashboard') }}" class="btn-new">Back to Dashboard</a>
+  </div>
+</div>
 
-        <main class="main-content results-wrapper">
+<div class="main">
 
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="flash-messages">
-                {% for message in messages %}
-                <div class="flash-alert">{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <div class="results-container slide-up">
-                <!-- Top Action Bar -->
-                <div class="results-header">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"
-                            style="padding: 6px 12px; height: 38px; box-sizing: border-box;">&larr; Back</a>
-                        <h2 style="margin: 0;">Analysis Results for <span style="color: #4F46E5;">{{ organization_name
-                                }}</span></h2>
-                    </div>
-                    <a href="{{ url_for('download_cam') }}" class="btn btn-secondary"
-                        style="height: 38px; box-sizing: border-box;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Download CAM
-                    </a>
-                </div>
-
-                <!-- Hero Score Card -->
-                <div class="card score-card {{ decision|lower }}"
-                    style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
-                    <div style="flex: 1;">
-                        <div class="score-header" style="justify-content: flex-start; gap: 16px;">
-                            <span class="label">Total Risk Score</span>
-                            <div class="badge decision-badge">{{ decision }}</div>
-                        </div>
-
-                        <!-- Entity Meta Details -->
-                        {% if entity_details %}
-                        <div style="margin-top: 15px; display: flex; gap: 20px; font-size: 0.9em; color: #475569;">
-                            <div><strong>CIN:</strong> {{ entity_details.get('cin', 'N/A') }}</div>
-                            <div><strong>PAN:</strong> {{ entity_details.get('pan', 'N/A') }}</div>
-                            <div><strong>Sector:</strong> {{ entity_details.get('sector', 'N/A') }}</div>
-                        </div>
-                        {% endif %}
-
-                        <div class="score-body"
-                            style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; margin-top: 15px;">
-                            <div class="score-number">{{ total_score }}<span>/100</span></div>
-                            <div style="display: flex; gap: 32px;">
-                                {% if loan_details %}
-                                <div class="interest-rate"
-                                    style="text-align: left; background: #f8fafc; padding: 10px; border-radius: 8px;">
-                                    <span class="label" style="color: #64748b; font-size: 0.85em;">Requested
-                                        Facility:</span>
-                                    <span class="value" style="font-size: 1.1em;">{{ loan_details.get('type') }} - ₹{{
-                                        loan_details.get('amount') }}Cr</span>
-                                </div>
-                                {% endif %}
-                                <div class="interest-rate" style="text-align: left;">
-                                    <span class="label">AI Suggested Limit:</span>
-                                    <span class="value" style="color: #4F46E5;">{{ limit }}</span>
-                                </div>
-                                <div class="interest-rate" style="text-align: left;">
-                                    <span class="label">AI Suggested Interest:</span>
-                                    <span class="value">{{ interest }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="width: 160px; height: 160px; flex-shrink: 0;">
-                        <canvas id="scoreGauge"></canvas>
-                    </div>
-                </div>
-
-                <!-- Decision Explanation -->
-                <div class="card mt-4" style="border-left: 4px solid var(--primary); background: #eff6ff;">
-                    <h3>Decision Rationale</h3>
-                    <p style="color: var(--text-primary); line-height: 1.5;">{{ explanation }}</p>
-                </div>
-
-                <!-- 5 Cs Breakdown -->
-                <div class="card">
-                    <h3>The Five Cs Assessment</h3>
-                    <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-                        <canvas id="fiveCsRadar"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>Financial Integrity Snapshot</h3>
-                    <div class="fin-grid">
-                        {% for key, val in financials.items() %}
-                            {% if key != 'Organization Name' %}
-                            <div class="fin-stat">
-                                <span class="stat-label">{{ key }}</span>
-                                <span class="stat-value">
-                                    {% if 'Profit' in key or 'Amount' in key or 'Revenue' in key or 'Assets' in key %}₹{% endif %}{{ val }}
-                                </span>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- GST & Bank Reconciliation -->
-                <div class="card mt-4">
-                    <h3>GST vs Bank Reconciliation</h3>
-                    <div style="width: 100%; height: 300px; margin-bottom: 20px;">
-                        <canvas id="gstBankBar"></canvas>
-                    </div>
-                    <div class="fin-grid">
-                        <div class="fin-stat">
-                            <span class="stat-label">Mismatched Months (>15%)</span>
-                            <span class="stat-value">{{ gst_bank_results.get('high_mismatch_months', []) | length
-                                }}</span>
-                        </div>
-                        <div class="fin-stat">
-                            <span class="stat-label">Repeated Counterparties</span>
-                            <span class="stat-value">{{ gst_bank_results.get('suspicious_counterparties', []) | length
-                                }}</span>
-                        </div>
-                        <div class="fin-stat">
-                            <span class="stat-label">ML Anomalies Detected</span>
-                            <span class="stat-value">{{ gst_bank_results.get('anomaly_months', []) | length }}</span>
-                        </div>
-                    </div>
-                    {% if gst_bank_results.get('anomaly_months') %}
-                    <div class="alert mt-3"
-                        style="border-left-color: var(--danger); background: #fef2f2; color: var(--danger);">
-                        <strong>ML Anomalies Flagged in:</strong> {{ gst_bank_results.get('anomaly_months') |
-                        join(', ') }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- External Intelligence -->
-                <div class="card mt-4">
-                    <h3>External News & Intelligence</h3>
-                    <div class="fin-grid">
-                        <div class="fin-stat">
-                            <span class="stat-label">Sentiment</span>
-                            <span class="stat-value">{{ news_insights.get('sentiment_score', 'N/A') }}</span>
-                        </div>
-                        <div class="fin-stat">
-                            <span class="stat-label">Litigation Risk</span>
-                            <span class="stat-value">{{ "Yes" if news_insights.get('litigation_detected') else "No"
-                                }}</span>
-                        </div>
-                    </div>
-                    {% if news_insights.get('risk_keywords') %}
-                    <div class="alert mt-3" style="background: #eff6ff; border-left: 4px solid var(--primary);">
-                        <strong>Detected Risk Keywords:</strong> <span style="color: var(--text-primary);">{{
-                            news_insights.get('risk_keywords') | join(', ') }}</span>
-                    </div>
-                    {% endif %}
-                </div>
-
-            </div>
-        </main>
+  <!-- ① Entity Header -->
+  <div class="entity-hd">
+    <div>
+      <div class="entity-name">{{ organization_name }}</div>
+      <div class="entity-meta">
+        <span>CIN: {{ entity_details.get('cin', 'N/A') }}</span>
+        <span>PAN: {{ entity_details.get('pan', 'N/A') }}</span>
+        <span>Sector: {{ entity_details.get('sector', 'N/A') }}</span>
+        <span>Turnover: ₹{{ entity_details.get('turnover', 'N/A') }} Cr</span>
+        <span>Loan: ₹{{ loan_details.get('amount', 'N/A') }} Cr ({{ loan_details.get('type', 'N/A') }}, {{ loan_details.get('tenure', 'N/A') }} Mo)</span>
+      </div>
     </div>
+    <div>
+      {% if 'Approve' in decision or decision == 'Approved' %}<span class="badge-approve"><i class="bi bi-check-circle me-1"></i>{{ decision }}</span>
+      {% elif 'Reject' in decision or decision == 'Rejected' %}<span class="badge-reject"><i class="bi bi-x-circle me-1"></i>{{ decision }}</span>
+      {% else %}<span class="badge-review"><i class="bi bi-exclamation-triangle me-1"></i>{{ decision }}</span>{% endif %}
+    </div>
+  </div>
 
-    <!-- Render Charts -->
-    <script>
-        // 1. Radar Chart for Five Cs
-        const radarContext = document.getElementById('fiveCsRadar').getContext('2d');
-        new Chart(radarContext, {
-            type: 'radar',
-            data: {
-                labels: ['Character (25)', 'Capacity (20)', 'Capital (15)', 'Collateral (15)', 'Conditions (25)'],
-                datasets: [{
-                    label: 'Score Allocation',
-                    data: [{{ character }}, {{ capacity }}, {{ capital }}, {{ collateral }}, {{ conditions }}],
-            backgroundColor: 'rgba(79, 70, 229, 0.2)',
-            borderColor: 'rgba(79, 70, 229, 1)',
-            borderWidth: 2,
-            pointBackgroundColor: 'rgba(79, 70, 229, 1)'
-                }]
-            },
-            options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 25,
-                    ticks: { stepSize: 5 }
-                }
-            }
-        }
-        });
+  <!-- ② Pipeline Progress (Static for Results page) -->
+  <div class="card mb-3">
+    <div class="section-label">Analysis Pipeline</div>
+    <div class="pipe">
+      {% set sm=[
+        ('cloud-upload','Upload','completed'),
+        ('tags','Classify','completed'),
+        ('table','Extract','completed'),
+        ('globe2','Research','completed'),
+        ('shield-check','Risk','completed'),
+        ('file-earmark-text','Report','completed')
+      ]%}
+      {% for icon,lbl,st in sm %}
+      <div class="pi">
+        <div class="pdot {{ st }}">
+          <i class="bi bi-check-lg"></i>
+        </div>
+        <div class="plbl {{ st }}">{{ lbl }}</div>
+      </div>
+      {% if not loop.last %}<div class="pconn {{ st }}"></div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
 
-        // 2. Bar Chart for GST vs Bank
-        const gstBankData = {{ gst_bank_results.get('mismatch_table', []) | tojson }};
-        if (gstBankData && gstBankData.length > 0) {
-            const labels = gstBankData.map(row => row.month);
-            const gstData = gstBankData.map(row => row.gst_revenue);
-            const bankData = gstBankData.map(row => row.bank_inflow);
+  <!-- ③ KPI Row: PD Gauge + Loan + OSINT -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-4">
+      <div class="card card-tg h-100 text-center">
+        <div class="section-label">Total Risk Score</div>
+        {% set pd = 100 - total_score|int %}
+        <div class="kpi-big mt-2 {% if total_score>70 %}text-success{% elif total_score>40 %}text-warning{% else %}text-danger{% endif %}">{{ total_score }}/100</div>
+        <div class="kpi-sub">{{ 'Low Risk' if total_score>70 else ('Moderate Risk' if total_score>40 else 'High Risk') }}</div>
+        <canvas id="pdGauge" height="110" class="mt-2"></canvas>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="section-label">AI Suggested Facility Details</div>
+        <div class="kpi-big" style="color:var(--primary)">{{ limit }}</div>
+        <div class="kpi-sub">Suggested Limit</div>
+        <hr style="border-color:var(--border);margin:.8rem 0">
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.4rem">
+          <span style="color:var(--muted)">Requested Facility</span>
+          <span style="font-weight:600;text-align:right">₹{{ loan_details.get('amount') }}Cr ({{ loan_details.get('type') }})</span>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.4rem">
+          <span style="color:var(--muted)">Suggested Interest Rate</span>
+          <span style="font-weight:600; text-align:right; color: var(--text);">{{ interest }}</span>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size:0.85rem; margin-bottom:0.4rem">
+          <span style="color:var(--muted)">Requested Interest</span>
+          <span style="font-weight:600; text-align:right; color: var(--text);">{{ loan_details.get('interest', 'N/A') }}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card {% if news_insights.get('litigation_detected') %}card-tr{% else %}card-tg{% endif %} h-100">
+        <div class="section-label">OSINT Intelligence</div>
+        <div class="kpi-big" style="color:var(--primary)">OSINT</div>
+        <div class="kpi-sub">Sentiment: {{ news_insights.get('sentiment_score', 'N/A') }}</div>
+        <hr style="border-color:var(--border);margin:.8rem 0">
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.4rem">
+          <span style="color:var(--muted)">Litigation Risk</span>
+          <b class="{{ 'text-danger' if news_insights.get('litigation_detected') else 'text-success' }}">
+            {{ 'Detected' if news_insights.get('litigation_detected') else 'Clean' }}
+          </b>
+        </div>
+        <div class="d-flex justify-content-between" style="font-size:.78rem;margin-bottom:.4rem">
+          <span style="color:var(--muted)">Risk Keywords</span>
+          <b style="text-align:right;max-width:150px">
+            {{ (news_insights.get('risk_keywords')|join(', ')) if news_insights.get('risk_keywords') else 'None' }}
+          </b>
+        </div>
+        <div class="mt-2">
+          {% if news_insights.get('litigation_detected') %}
+            <span style="font-size:.7rem;background:#fef2f2;color:var(--red);border:1px solid #fecaca;padding:2px 9px;border-radius:20px;font-weight:600;">⚠ High External Risk</span>
+          {% else %}
+            <span style="font-size:.7rem;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:2px 9px;border-radius:20px;font-weight:600;">✔ Standard External Profile</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
-            const barContext = document.getElementById('gstBankBar').getContext('2d');
-            new Chart(barContext, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'GST Declared',
-                            data: gstData,
-                            backgroundColor: 'rgba(59, 130, 246, 0.7)' // Blue
-                        },
-                        {
-                            label: 'Bank Received',
-                            data: bankData,
-                            backgroundColor: 'rgba(16, 185, 129, 0.7)' // Green
-                        }
-                    ]
+  <!-- ④ Five C's + GST/Bank Mismatch -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-6">
+      <div class="card card-tl h-100">
+        <div class="section-label">Credit Assessment</div>
+        <div class="card-title">Five C's Analysis</div>
+        {% for score,mx,lbl,clr in [(character,25,'Character','#3b82f6'),(capacity,20,'Capacity','#10b981'),(capital,15,'Capital','#f59e0b'),(collateral,15,'Collateral','#8b5cf6'),(conditions,25,'Conditions','#ec4899')] %}
+        {% set pct = (score / mx * 100)|round %}
+        <div class="cbar">
+          <div class="crow"><span class="fw-semibold">{{ lbl }}</span><span style="color:{{ clr }};font-weight:600;">{{ score|round(1) }}/{{ mx }}</span></div>
+          <div class="ctrack"><div class="cfill" style="width:{{ pct }}%; background:{{ clr }};"></div></div>
+        </div>{% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card card-ta h-100">
+        <div class="section-label">India-Specific Intelligence</div>
+        <div class="card-title">GST vs Bank Reconciliation</div>
+        <div style="width: 100%; height: 160px;">
+          <canvas id="gstBankBar"></canvas>
+        </div>
+        <div class="mt-3">
+          {% if gst_bank_results.get('anomaly_months') %}
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:5px;padding:.5rem .7rem;font-size:.75rem;color:#991b1b;">
+            <b>ML Anomalies Flagged in:</b> {{ gst_bank_results.get('anomaly_months') | join(', ') }}
+          </div>
+          {% endif %}
+          <div style="display:flex; gap: 1rem; margin-top: 0.5rem;">
+             <span style="font-size:0.8rem; color:var(--muted)">High Mismatch Months: <b style="color:var(--text)">{{ gst_bank_results.get('high_mismatch_months', []) | length }}</b></span>
+             <span style="font-size:0.8rem; color:var(--muted)">Doubtful Counterparties: <b style="color:var(--text)">{{ gst_bank_results.get('suspicious_counterparties', []) | length }}</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ Ratios + Narrative -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-5">
+      <div class="card h-100">
+        <div class="section-label">Quantitative Metrics</div>
+        <div class="card-title">Financial Integrity Snapshot</div>
+        <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+        {% for key, val in financials.items() %}
+          {% if key != 'Organization Name' %}
+          <div class="rrow" style="border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px;">
+            <div class="rlbl">{{ key }}</div>
+            <div class="rval" style="width:100%; text-align:right;">
+              {% if 'Profit' in key or 'Amount' in key or 'Revenue' in key or 'Assets' in key %}₹{% endif %}{{ val }}
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="card card-tg h-100">
+        <div class="section-label">GenAI Synthesis</div>
+        <div class="card-title">Decision Rationale</div>
+        <div class="narrative-box">
+          {{ explanation }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ Download Footer -->
+  <div class="dl-footer">
+    <a href="{{ url_for('download_cam') }}" class="btn-dl-big pdf"><i class="bi bi-file-earmark-pdf"></i>Download CAM Report (PDF)</a>
+  </div>
+
+</div>
+
+<script>
+// Gauge Chart for Total Score
+const score = {{ total_score }};
+const remainder = 100 - score;
+const color = score > 70 ? '#10b981' : (score > 40 ? '#f59e0b' : '#ef4444');
+
+new Chart(document.getElementById('pdGauge'),{
+  type:'doughnut',
+  data:{datasets:[{
+    data:[score, remainder],
+    backgroundColor:[color,'#e2e8f0'],
+    borderWidth:0,circumference:270,rotation:225
+  }]},
+  options:{cutout:'78%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:1100}}
+});
+
+// Bar Chart for GST vs Bank
+const gstBankData = {{ gst_bank_results.get('mismatch_table', []) | tojson }};
+
+if (gstBankData && gstBankData.length > 0) {
+    const labels = gstBankData.map(row => row.month);
+    const gstData = gstBankData.map(row => row.gst_revenue);
+    const bankData = gstBankData.map(row => row.bank_inflow);
+
+    new Chart(document.getElementById('gstBankBar'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'GST Declared',
+                    data: gstData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)' // var(--primary)
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
+                {
+                    label: 'Bank Received',
+                    data: bankData,
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)' // var(--green)
                 }
-            });
-        }
-
-        // 3. Simple Doughnut Gauge for Total Score
-        const gaugeContext = document.getElementById('scoreGauge').getContext('2d');
-        const score = {{ total_score }};
-        const remainder = 100 - score;
-        const color = score > 70 ? '#10B981' : (score > 50 ? '#F59E0B' : '#EF4444');
-
-        new Chart(gaugeContext, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [score, remainder],
-                    backgroundColor: [color, '#E5E7EB'],
-                    borderWidth: 0,
-                    circumference: 180,
-                    rotation: 270
-                }]
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    tooltip: { enabled: false }
+            plugins: {
+                legend: {
+                    display: true
                 }
             }
-        });
-    </script>
+        }
+    });
+}
+</script>
 </body>
-
 </html>

@@ -20,7 +20,7 @@ def process_pdf(pdf_path):
         doc = fitz.open(pdf_path)
         extracted_data = []
         
-        max_pages_to_read = min(15, len(doc))
+        max_pages_to_read = min(400, len(doc))
         for page_num in range(max_pages_to_read):
             page = doc[page_num]
             text = page.get_text("text").strip()

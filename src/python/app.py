@@ -15,6 +15,10 @@ from modules.news_intelligence import process_news
 from modules.risk_engine import compute_risk_score
 from modules.cam_generator import generate_cam
 from modules.pdf_report_generator import create_cam_pdf
+import concurrent.futures
+from modules.risk_engine import compute_risk_score
+from modules.cam_generator import generate_cam
+from modules.pdf_report_generator import create_cam_pdf
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -75,6 +79,8 @@ def background_process_documents(task_id, saved_doc_paths, entity_details, loan_
             background_tasks[task_id]['status'] = 'error'
             background_tasks[task_id]['message'] = "The uploaded Annual Report PDF appears to be a scanned image or completely empty."
             return
+            
+        extracted_text = extracted_text.replace("C crore", "Crore").replace("С crore", "Crore").replace("c crore", "Crore")
             
         with open(os.path.join(app_config['UPLOAD_FOLDER'], 'extracted_text_cache.json'), 'w', encoding='utf-8') as f:
             f.write(extracted_text)
@@ -294,14 +300,16 @@ def analyze_confirmed():
         except:
              extracted_text = ""
 
-        # 4. Analyze GST and Bank mismatch
-        print("[4/7] Running IsolationForest ML on GST vs Bank records...")
-        gst_bank_results = analyze_gst_bank(gst_path, bank_path)
-        
-        # 5. Analyze News Intelligence
-        print("[5/7] Crawling Web & Scanning for News Intelligence Risk...")
+        # 4 & 5. Analyze GST/Bank mismatch and News Intelligence Concurrently
+        print("[4/7 & 5/7] Running IsolationForest ML and OSINT Intelligence concurrently...")
         organization_name = financials.get('Organization Name', 'Unknown Organization')
-        news_insights = process_news(app.config['NEWS_FOLDER'], organization_name)
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            future_gst = executor.submit(analyze_gst_bank, gst_path, bank_path)
+            future_news = executor.submit(process_news, app.config['NEWS_FOLDER'], organization_name)
+            
+            gst_bank_results = future_gst.result()
+            news_insights = future_news.result()
         
         # 6. Compute Risk Score (Five Cs)
         print("[6/7] Computing AI Five-Cs Risk Profile...")
@@ -317,7 +325,7 @@ def analyze_confirmed():
         # 8. Create Downloadable PDF
         cam_pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], "cam_report.pdf")
         organization_name = financials.get('Organization Name', 'Unknown Organization')
-        create_cam_pdf(ca_memo_text, cam_pdf_path, borrower_name=organization_name, financials=financials)
+        create_cam_pdf(ca_memo_text, cam_pdf_path, borrower_name=organization_name, financials=financials, gst_bank_results=gst_bank_results, news_insights=news_insights)
         
         print("--- Final Analysis Complete! Rendering Dashboard ---")
 

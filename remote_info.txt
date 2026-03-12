@@ -1,0 +1,6 @@
+huggingface	https://huggingface.co/spaces/Parvathamlohith/Intelli-Credit-Engine (fetch)
+huggingface	https://huggingface.co/spaces/Parvathamlohith/Intelli-Credit-Engine (push)
+new-origin	https://github.com/Lohith10118/CAM-Generator.git (fetch)
+new-origin	https://github.com/Lohith10118/CAM-Generator.git (push)
+origin	https://github.com/Lohith10118/CAM-Generator.git (fetch)
+origin	https://github.com/Lohith10118/CAM-Generator.git (push)

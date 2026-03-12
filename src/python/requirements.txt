@@ -23,3 +23,4 @@ opencv-python-headless
 tabula-py
 feedparser
 sentence-transformers
+yfinance

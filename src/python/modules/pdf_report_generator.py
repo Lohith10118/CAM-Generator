@@ -97,7 +97,7 @@ def create_table(data, col_widths, style_cmds):
     t.setStyle(TableStyle(base_style))
     return t
 
-def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", financials=None):
+def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", financials=None, gst_bank_results=None, news_insights=None):
     doc = SimpleDocTemplate(
         output_path, 
         pagesize=letter,
@@ -119,11 +119,15 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     
     story = []
     
+    def safe_dict(data_dict, key):
+        val = data_dict.get(key, {})
+        return val if isinstance(val, dict) else {}
+        
     # 1. Borrower Overview & Entity Details
     story.append(get_paragraph("<b>1. Borrower Overview & Entity Details</b>", size=12))
     story.append(Spacer(1, 4))
-    b_overview = report_data.get("borrower_overview", {})
-    e_idents = report_data.get("entity_identifiers", {})
+    b_overview = safe_dict(report_data, "borrower_overview")
+    e_idents = safe_dict(report_data, "entity_identifiers")
     t1_data = [
         [get_paragraph("<b>Corporate Identity Number (CIN)</b>"), get_paragraph(e_idents.get("cin", "N/A"))],
         [get_paragraph("<b>Permanent Account Number (PAN)</b>"), get_paragraph(e_idents.get("pan", "N/A"))],
@@ -147,7 +151,7 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
                 safe_val = str(val).replace("₹", "Rs. ")
                 t2_data.append([get_paragraph(f"<b>{key}</b>"), get_paragraph(safe_val)])
     else:
-        f_perf = report_data.get("financial_performance", {})
+        f_perf = safe_dict(report_data, "financial_performance")
         t2_data = [
             [get_paragraph("<b>Net Profit</b>"), get_paragraph(str(f_perf.get("net_profit", "")))],
             [get_paragraph("<b>Return on Assets (ROA)</b>"), get_paragraph(str(f_perf.get("roa", "")))],
@@ -162,11 +166,11 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     # 3. Revenue Validation
     story.append(get_paragraph("<b>3. Revenue Validation (GST & Bank)</b>", size=12))
     story.append(Spacer(1, 4))
-    r_val = report_data.get("revenue_validation", {})
+    r_val = safe_dict(report_data, "revenue_validation")
     t3_data = [
         [get_paragraph("<b>Mismatch Status</b>"), get_paragraph(str(r_val.get("gst_bank_mismatch_status", "")))],
-        [get_paragraph("<b>Suspicious Counterparties</b>"), get_paragraph(str(r_val.get("suspicious_counterparties", "")))],
-        [get_paragraph("<b>ML Anomalies Detected</b>"), get_paragraph(str(r_val.get("ml_anomalies", "")))]
+        [get_paragraph("<b>Suspicious Counterparties</b>"), get_paragraph(str(len(gst_bank_results.get('suspicious_counterparties', []))) if gst_bank_results else str(r_val.get("suspicious_counterparties", "")))],
+        [get_paragraph("<b>ML Anomalies Detected</b>"), get_paragraph(", ".join(gst_bank_results.get('anomaly_months', [])) if gst_bank_results and gst_bank_results.get('anomaly_months') else str(r_val.get("ml_anomalies", "")))]
     ]
     t3 = create_table(t3_data, [150, 380], [('BACKGROUND', (0,0), (0,-1), HEADER_GREEN)])
     story.append(t3)
@@ -175,7 +179,7 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     # 4. External Intelligence
     story.append(get_paragraph("<b>4. External Intelligence (News & Litigation)</b>", size=12))
     story.append(Spacer(1, 4))
-    e_int = report_data.get("external_intelligence", {})
+    e_int = safe_dict(report_data, "external_intelligence")
     t4_data = [
         [get_paragraph("<b>News Sentiment</b>"), get_paragraph(e_int.get("news_sentiment", ""))],
         [get_paragraph("<b>Litigation Found</b>"), get_paragraph(str(e_int.get("litigation_found", "")))],
@@ -188,7 +192,7 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     # 5. Risk Assessment (Five Cs)
     story.append(get_paragraph("<b>5. Risk Assessment (The Five Cs)</b>", size=12))
     story.append(Spacer(1, 4))
-    five_cs = report_data.get("risk_assessment_five_cs", {})
+    five_cs = safe_dict(report_data, "risk_assessment_five_cs")
     t5_data = [
         [get_paragraph("<b>Character</b>"), get_paragraph(str(five_cs.get("character", "")))],
         [get_paragraph("<b>Capacity</b>"), get_paragraph(str(five_cs.get("capacity", "")))],
@@ -200,10 +204,24 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
     story.append(t5)
     story.append(Spacer(1, 15))
     
-    # 6. Credit Recommendation
-    story.append(get_paragraph("<b>6. Final Credit Recommendation</b>", size=12))
+    # 6. SWOT Analysis
+    story.append(get_paragraph("<b>6. SWOT Analysis</b>", size=12))
     story.append(Spacer(1, 4))
-    rec = report_data.get("credit_recommendation", {})
+    swot = safe_dict(report_data, "swot_analysis")
+    swot_t_data = [
+        [get_paragraph("<b>Strengths</b>"), get_paragraph(swot.get("strengths", ""))],
+        [get_paragraph("<b>Weaknesses</b>"), get_paragraph(swot.get("weaknesses", ""))],
+        [get_paragraph("<b>Opportunities</b>"), get_paragraph(swot.get("opportunities", ""))],
+        [get_paragraph("<b>Threats</b>"), get_paragraph(swot.get("threats", ""))]
+    ]
+    swot_t = create_table(swot_t_data, [150, 380], [('BACKGROUND', (0,0), (0,-1), HEADER_GREEN)])
+    story.append(swot_t)
+    story.append(Spacer(1, 15))
+
+    # 7. Credit Recommendation
+    story.append(get_paragraph("<b>7. Final Credit Recommendation</b>", size=12))
+    story.append(Spacer(1, 4))
+    rec = safe_dict(report_data, "credit_recommendation")
     
     # Color-code the decision
     decision_val = str(rec.get("decision", "Review"))

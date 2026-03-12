@@ -21,6 +21,8 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     CRITICAL RULE: Never say 'Not available in provided docs'. If specific collateral or capital details are missing, you MUST generate an estimated justification based on the company's Total Assets and Net Worth.
     CRITICAL RULE 2: Format all financial numbers cleanly (e.g., '1,022,401 Crore'). Do not write 'C in crore'.
     
+    Generate a SWOT analysis. YOU MUST FORMAT THE OUTPUT AS PLAIN TEXT. DO NOT use JSON, arrays, brackets [ ], or quotation marks. Use standard bullet points ( - ).
+    
     Do NOT include markdown formatting. Return ONLY a valid JSON object matching this exact schema:
     
     {{
@@ -58,6 +60,12 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
         "collateral": "Score and brief justification",
         "conditions": "Score and brief justification"
       }},
+      "swot_analysis": {{
+        "strengths": "List of core strengths",
+        "weaknesses": "List of key weaknesses",
+        "opportunities": "List of growth opportunities",
+        "threats": "List of external threats"
+      }},
       "credit_recommendation": {{
         "decision": "Approve/Review/Reject",
         "requested_facility": "The user requested facility type and amount",
@@ -88,6 +96,8 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
     
     External Intelligence Findings:
     {json.dumps(news_insights, indent=2)}
+    
+    Here is the latest web news: {news_insights.get('latest_news_summary', 'None available')}. Triangulate this with the financial data to adjust your risk score.
     
     Total Risk Engine Decision Outputs:
     {json.dumps(risk_results, indent=2)}
@@ -151,6 +161,12 @@ def generate_cam(risk_results, financials, gst_bank_results, news_insights, full
                 "capital": str(risk_results.get("capital_score", "N/A")) if risk_results else "N/A", 
                 "collateral": str(risk_results.get("collateral_score", "N/A")) if risk_results else "N/A", 
                 "conditions": str(risk_results.get("conditions_score", "N/A")) if risk_results else "N/A"
+            },
+            "swot_analysis": {
+                "strengths": "Data Unavailable",
+                "weaknesses": "Data Unavailable",
+                "opportunities": "Data Unavailable",
+                "threats": "Data Unavailable"
             },
             "credit_recommendation": {
                 "decision": risk_results.get("decision", "Error") if risk_results else "Error",
