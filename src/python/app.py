@@ -30,9 +30,16 @@ app.secret_key = 'supersecretkey'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'uploads')
 app.config['NEWS_FOLDER'] = os.path.join(basedir, 'uploads', 'news')
+# Allow up to 500 MB uploads — without this, large PDFs cause a silent crash
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['NEWS_FOLDER'], exist_ok=True)
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('The uploaded file is too large (max 500 MB). Please compress your files and try again.')
+    return redirect(url_for('dashboard'))
 
 @app.route("/", methods=['GET'])
 def dashboard():
@@ -151,6 +158,8 @@ def process_documents():
     for doc in unclassified_docs:
         if doc and doc.filename:
             filename = secure_filename(doc.filename)
+            if not filename:
+                filename = f"file_{str(uuid.uuid4())[:8]}.dat"
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             doc.save(path)
             
@@ -171,7 +180,10 @@ def process_documents():
 
     for news in news_files:
         if news and news.filename:
-            news.save(os.path.join(app.config['NEWS_FOLDER'], secure_filename(news.filename)))
+            news_filename = secure_filename(news.filename)
+            if not news_filename:
+                news_filename = f"news_{str(uuid.uuid4())[:8]}.txt"
+            news.save(os.path.join(app.config['NEWS_FOLDER'], news_filename))
 
     # --- Start Background Processing Thread ---
     task_id = str(uuid.uuid4())
@@ -284,9 +296,11 @@ def analyze_confirmed():
                 elif category == "Bank Statements":
                     bank_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-        if not gst_path or not bank_path or not os.path.exists(str(gst_path)) or not os.path.exists(str(bank_path)):
-            flash("Error: You must assign at least one document as 'GST Returns' and one as 'Bank Statements' in the review screen.")
-            return redirect(url_for('dashboard'))
+        # Validation removed: GST Returns and Bank Statements are now optional.
+        if gst_path and not os.path.exists(str(gst_path)):
+            gst_path = None
+        if bank_path and not os.path.exists(str(bank_path)):
+            bank_path = None
 
         try:
              with open(os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_text_cache.json'), 'r', encoding='utf-8') as f:
@@ -358,6 +372,11 @@ def download_cam():
         return redirect(url_for("dashboard"))
 
 if __name__ == "__main__":
-    # host='0.0.0.0' makes it accessible to the internet
-    # port=7860 is required by Hugging Face Spaces
-    app.run(host='0.0.0.0', port=7860, debug=False)
+    # host='0.0.0.0' makes it accessible to the internet (required by HF Spaces)
+    # Using 127.0.0.1 locally prevents Windows/Corporate firewalls from blocking uploads
+    # threaded=True is CRITICAL on Windows — prevents the single-threaded Werkzeug server
+    # from hanging/crashing when reading large multipart file uploads
+    host = '0.0.0.0' if os.environ.get('SPACE_ID') else '127.0.0.1'
+    port = int(os.environ.get('PORT', 5000))
+    print(f"\n✅ Server starting at http://{host}:{port}/")
+    app.run(host=host, port=port, debug=False, threaded=True)

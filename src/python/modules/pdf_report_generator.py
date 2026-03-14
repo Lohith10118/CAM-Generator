@@ -101,7 +101,8 @@ def create_cam_pdf(cam_text, output_path, borrower_name="Unknown Organization", 
         output_path, 
         pagesize=letter,
         rightMargin=40, leftMargin=40,
-        topMargin=80, bottomMargin=70 
+        topMargin=80, bottomMargin=70,
+        title="CAM"
     )
                             
     try:

@@ -10,6 +10,10 @@ def analyze_gst_bank(gst_file, bank_file):
     - Detects repeated counterparties.
     - Uses PyOD Isolation Forest to detect anomalous transaction amounts.
     """
+    if not gst_file or not bank_file:
+        print("Missing GST Returns or Bank Statements. Skipping anomaly detection.")
+        return __fallback_results()
+
     try:
         gst_df = pd.read_csv(gst_file)
         bank_df = pd.read_csv(bank_file)
